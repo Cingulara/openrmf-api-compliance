@@ -15,7 +15,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
 using openstig_api_compliance.Models;
-using openstig_api_compliance.Data;
 
 namespace openstig_api_compliance
 {
@@ -38,13 +37,11 @@ namespace openstig_api_compliance
                 options.Database = Environment.GetEnvironmentVariable("mongodb");
             });
             
-            services.AddTransient<IArtifactRepository, ArtifactRepository>();
-
             // Register the Swagger generator, defining one or more Swagger documents
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new Info { Title = "openSTIG Read API", Version = "v1", 
-                    Description = "The Read API that goes with the openSTIG tool",
+                c.SwaggerDoc("v1", new Info { Title = "openSTIG Compliance API", Version = "v1", 
+                    Description = "The Compliance API that goes with the openSTIG tool",
                     Contact = new Contact
                     {
                         Name = "Dale Bingham",
@@ -91,7 +88,7 @@ namespace openstig_api_compliance
             // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.), specifying the Swagger JSON endpoint.
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "openSTIG Read API V1");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "openSTIG Compliance API V1");
             });
 
             // ********************

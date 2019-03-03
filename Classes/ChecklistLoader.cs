@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using openstig_api_compliance.Models;
+using openstig_api_compliance.Models.Artifact;
 using System.IO;
 using System.Text;
 using System.Xml.Serialization;

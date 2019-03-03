@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson;
 
-namespace openstig_api_compliance.Models
+namespace openstig_api_compliance.Models.Artifact
 {
     [Serializable]
     public class Artifact
