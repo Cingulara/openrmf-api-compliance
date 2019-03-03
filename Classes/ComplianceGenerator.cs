@@ -31,7 +31,7 @@ namespace openstig_api_compliance.Classes
                 if (checklists != null && checklists.Count > 0) {
                     foreach (Artifact a in checklists) {
                         art = WebClient.GetChecklistAsync(a.InternalId.ToString()).GetAwaiter().GetResult();
-                        foreach (VULN v in a.CHECKLIST.STIGS.iSTIG.VULN){
+                        foreach (VULN v in art.CHECKLIST.STIGS.iSTIG.VULN){
                             // grab each CCI and then match to NIST
                             // fill in the compliance record for the control and add to the list
                             sd = v.STIG_DATA.Where(x => x.VULN_ATTRIBUTE == "CCI_REF").ToList();
@@ -41,21 +41,24 @@ namespace openstig_api_compliance.Classes
                                 control.control = "AU-9";
                                 control.index = "AU-9.1";
                                 ComplianceRecord rec = new ComplianceRecord();
-                                rec.artifactId = a.InternalId.ToString();
+                                rec.artifactId = art.InternalId;
                                 rec.severity = v.STIG_DATA.Where(y => y.VULN_ATTRIBUTE == "Severity").FirstOrDefault().ATTRIBUTE_DATA;
                                 rec.status = v.STATUS;
-                                rec.stigId = v.STIG_DATA.Where(y => y.VULN_ATTRIBUTE == "Rule_Id").FirstOrDefault().ATTRIBUTE_DATA;
+                                rec.stigId = v.STIG_DATA.Where(y => y.VULN_ATTRIBUTE == "Rule_ID").FirstOrDefault().ATTRIBUTE_DATA;
                                 rec.vulnId = v.STIG_DATA.Where(y => y.VULN_ATTRIBUTE == "Vuln_Num").FirstOrDefault().ATTRIBUTE_DATA;
-                                rec.updatedOn = a.updatedOn.Value;
-                                rec.title = a.title;
-                                rec.type = a.type;
+                                rec.updatedOn = art.updatedOn.Value;
+                                rec.title = art.title;
+                                rec.type = art.type;
                                 rec.vulnTitle = v.STIG_DATA.Where(y => y.VULN_ATTRIBUTE == "Rule_Title").FirstOrDefault().ATTRIBUTE_DATA;
+                                control.complianceRecords.Add(rec); // add the rec to the control we are making
                                 controls.Add(control); // add to the control
                             }
                         }
                     }
+                    return controls;
                 }
-                return controls;
+                else
+                    return null;
             }
             catch (Exception ex) {
                 // log it here

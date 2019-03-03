@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using MongoDB.Bson.Serialization.Attributes;
-using MongoDB.Bson;
 using openstig_api_compliance.Models.Artifact;
 
 namespace openstig_api_compliance.Models.Compliance

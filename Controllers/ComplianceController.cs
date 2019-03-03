@@ -40,7 +40,11 @@ namespace openstig_api_compliance.Controllers
         {
             if (!string.IsNullOrEmpty(id)) {
                 try {
-                    return Ok(ComplianceGenerator.GetSystemControls(id));
+                    var result = ComplianceGenerator.GetSystemControls(id);
+                    if (result != null && result.Result != null && result.Result.Count > 0)
+                        return Ok(result);
+                    else
+                        return NotFound(); // bad system reference
                 }
                 catch (Exception ex) {
                     _logger.LogError(ex, "Error listing all checklists for system {0}", id);

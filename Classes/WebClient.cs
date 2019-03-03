@@ -23,10 +23,11 @@ namespace openstig_api_compliance.Classes
                     client.DefaultRequestHeaders.Accept.Clear();
                     client.DefaultRequestHeaders.Add("Accept", "application/json");
                     string hosturl = Environment.GetEnvironmentVariable("openstig-api-read-server");
-                    HttpResponseMessage response = await client.GetAsync(hosturl + "/systems/" + systemId);
+                    HttpResponseMessage response = await client.GetAsync(hosturl + "/systems/" + System.Uri.EscapeUriString(systemId));
                     response.EnsureSuccessStatusCode();
                     string responseBody = await response.Content.ReadAsStringAsync();
-                    return JsonConvert.DeserializeObject<List<Artifact>>(responseBody);
+                    var result = JsonConvert.DeserializeObject<List<Artifact>>(responseBody);
+                    return result;
                 }
                 catch(HttpRequestException e)
                 {
