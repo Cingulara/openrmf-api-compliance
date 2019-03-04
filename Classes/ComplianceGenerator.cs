@@ -4,12 +4,15 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using openstig_api_compliance.Models.Artifact;
 using openstig_api_compliance.Models.Compliance;
+using openstig_api_compliance.Models.NISTtoCCI;
 using System.Xml.Serialization;
 using System.IO;
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
+using System.Xml;
 using System.Xml.Linq;
+using System.Xml.XPath;
 
 namespace openstig_api_compliance.Classes
 {
@@ -23,6 +26,9 @@ namespace openstig_api_compliance.Classes
             //      for each CCI within the VULN listed
             //        match up the CCI to the NIST, then get the status, checklist and ID, STIG ID , VULN ID, and type and return it
             try {
+                List<CciItem> cciItems = NistCciGenerator.LoadNistToCci();                
+
+                // get all the variables ready
                 List<NISTControl> controls = new List<NISTControl>();
                 NISTControl control;
                 List<STIG_DATA> sd;
