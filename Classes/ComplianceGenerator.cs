@@ -38,29 +38,31 @@ namespace openstig_api_compliance.Classes
                 if (checklists != null && checklists.Count > 0) {
                     foreach (Artifact a in checklists) {
                         art = WebClient.GetChecklistAsync(a.InternalId.ToString()).GetAwaiter().GetResult();
-                        foreach (VULN v in art.CHECKLIST.STIGS.iSTIG.VULN){
-                            // grab each CCI and then match to one or more NIST Control records
-                            // fill in the compliance record for the control and add the compliance record to that control w/in the larger list
-                            sd = v.STIG_DATA.Where(x => x.VULN_ATTRIBUTE == "CCI_REF").ToList();
-                            foreach (STIG_DATA d in sd) {
-                                foreach (NISTControl ctrl in controls.Where(x => x.CCI == d.ATTRIBUTE_DATA).ToList()) {
-                                    rec = new ComplianceRecord();
-                                    rec.artifactId = art.InternalId;
-                                    rec.severity = v.STIG_DATA.Where(y => y.VULN_ATTRIBUTE == "Severity").FirstOrDefault().ATTRIBUTE_DATA;
-                                    rec.status = v.STATUS;
-                                    rec.stigId = v.STIG_DATA.Where(y => y.VULN_ATTRIBUTE == "Rule_ID").FirstOrDefault().ATTRIBUTE_DATA;
-                                    rec.vulnId = v.STIG_DATA.Where(y => y.VULN_ATTRIBUTE == "Vuln_Num").FirstOrDefault().ATTRIBUTE_DATA;
-                                    rec.updatedOn = art.updatedOn.Value;
-                                    rec.title = art.title;
-                                    rec.type = art.type;
-                                    rec.vulnTitle = v.STIG_DATA.Where(y => y.VULN_ATTRIBUTE == "Rule_Title").FirstOrDefault().ATTRIBUTE_DATA;
-                                    ctrl.complianceRecords.Add(rec); // add the rec to the control we are making
-                                    //controls.Add(control); // add to the control
+                        if (art != null) {
+                            foreach (VULN v in art.CHECKLIST.STIGS.iSTIG.VULN){
+                                // grab each CCI and then match to one or more NIST Control records
+                                // fill in the compliance record for the control and add the compliance record to that control w/in the larger list
+                                sd = v.STIG_DATA.Where(x => x.VULN_ATTRIBUTE == "CCI_REF").ToList();
+                                foreach (STIG_DATA d in sd) {
+                                    foreach (NISTControl ctrl in controls.Where(x => x.CCI == d.ATTRIBUTE_DATA).ToList()) {
+                                        rec = new ComplianceRecord();
+                                        rec.artifactId = art.InternalId;
+                                        rec.severity = v.STIG_DATA.Where(y => y.VULN_ATTRIBUTE == "Severity").FirstOrDefault().ATTRIBUTE_DATA;
+                                        rec.status = v.STATUS;
+                                        rec.stigId = v.STIG_DATA.Where(y => y.VULN_ATTRIBUTE == "Rule_ID").FirstOrDefault().ATTRIBUTE_DATA;
+                                        rec.vulnId = v.STIG_DATA.Where(y => y.VULN_ATTRIBUTE == "Vuln_Num").FirstOrDefault().ATTRIBUTE_DATA;
+                                        rec.updatedOn = art.updatedOn.Value;
+                                        rec.title = art.title;
+                                        rec.type = art.type;
+                                        rec.vulnTitle = v.STIG_DATA.Where(y => y.VULN_ATTRIBUTE == "Rule_Title").FirstOrDefault().ATTRIBUTE_DATA;
+                                        ctrl.complianceRecords.Add(rec); // add the rec to the control we are making
+                                }
                                 }
                             }
                         }
                     }
-                    return controls;
+                    // order by the index, which also groups them by the major control
+                    return controls.OrderBy(x => x.index).ToList();
                 }
                 else
                     return null;
