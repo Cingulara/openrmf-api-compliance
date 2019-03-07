@@ -1,8 +1,8 @@
 VERSION ?= 0.4
 NAME ?= "openstig-api-compliance"
 AUTHOR ?= "Dale Bingham"
-PORT_EXT ?= 8084
-PORT_INT ?= 8084
+PORT_EXT ?= 8092
+PORT_INT ?= 8092
 NO_CACHE ?= true
 DOCKERHUB_ACCOUNT ?= cingulara
   
