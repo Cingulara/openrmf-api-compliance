@@ -16,7 +16,7 @@ namespace openstig_api_compliance.Models.Compliance
         // the index is the major control with all extra dots, dashes, and sub paragraphs
         public string index { get; set; }
         public string title { get; set; }
-        public int version { get; set; }
+        public string version { get; set; }
         public string location { get; set; }
         public string CCI { get; set; }
         public List<ComplianceRecord> complianceRecords { get; set; }
