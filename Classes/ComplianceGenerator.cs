@@ -34,11 +34,15 @@ namespace openstig_api_compliance.Classes
                 List<STIG_DATA> sd;
                 Artifact art;
                 ComplianceRecord rec;
+                string host = "";
+                string domainName = "";
                 List<Artifact> checklists = WebClient.GetChecklistsBySystem(systemId).GetAwaiter().GetResult();
                 if (checklists != null && checklists.Count > 0) {
                     foreach (Artifact a in checklists) {
                         art = WebClient.GetChecklistAsync(a.InternalId.ToString()).GetAwaiter().GetResult();
                         if (art != null) {
+                            host = !string.IsNullOrEmpty(a.CHECKLIST.ASSET.HOST_NAME)? a.CHECKLIST.ASSET.HOST_NAME : "";
+                            domainName = !string.IsNullOrEmpty(a.CHECKLIST.ASSET.HOST_FQDN)? a.CHECKLIST.ASSET.HOST_FQDN : "";
                             foreach (VULN v in art.CHECKLIST.STIGS.iSTIG.VULN){
                                 // grab each CCI and then match to one or more NIST Control records
                                 // fill in the compliance record for the control and add the compliance record to that control w/in the larger list
@@ -54,6 +58,8 @@ namespace openstig_api_compliance.Classes
                                         rec.updatedOn = art.updatedOn.Value;
                                         rec.title = art.title;
                                         rec.type = art.type;
+                                        rec.hostName = host;
+                                        rec.domainName = domainName;
                                         rec.vulnTitle = v.STIG_DATA.Where(y => y.VULN_ATTRIBUTE == "Rule_Title").FirstOrDefault().ATTRIBUTE_DATA;
                                         ctrl.complianceRecords.Add(rec); // add the rec to the control we are making
                                 }

@@ -19,6 +19,8 @@ namespace openstig_api_compliance.Models.Compliance
         public string stigId { get; set; }
         public string status { get; set; }
         public string severity { get; set;}
+        public string hostName { get; set; }
+        public string domainName { get; set;}
 
         // the last time this was updated
         public DateTime updatedOn { get; set; }
