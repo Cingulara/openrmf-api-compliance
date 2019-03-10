@@ -1,4 +1,4 @@
-VERSION ?= 0.4
+VERSION ?= 0.5
 NAME ?= "openstig-api-compliance"
 AUTHOR ?= "Dale Bingham"
 PORT_EXT ?= 8092
