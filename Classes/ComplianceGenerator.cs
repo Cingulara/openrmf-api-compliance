@@ -41,8 +41,8 @@ namespace openstig_api_compliance.Classes
                     foreach (Artifact a in checklists) {
                         art = WebClient.GetChecklistAsync(a.InternalId.ToString()).GetAwaiter().GetResult();
                         if (art != null) {
-                            host = !string.IsNullOrEmpty(a.CHECKLIST.ASSET.HOST_NAME)? a.CHECKLIST.ASSET.HOST_NAME : "";
-                            domainName = !string.IsNullOrEmpty(a.CHECKLIST.ASSET.HOST_FQDN)? a.CHECKLIST.ASSET.HOST_FQDN : "";
+                            host = !string.IsNullOrEmpty(art.CHECKLIST.ASSET.HOST_NAME)? art.CHECKLIST.ASSET.HOST_NAME : "";
+                            domainName = !string.IsNullOrEmpty(art.CHECKLIST.ASSET.HOST_FQDN)? art.CHECKLIST.ASSET.HOST_FQDN : "";
                             foreach (VULN v in art.CHECKLIST.STIGS.iSTIG.VULN){
                                 // grab each CCI and then match to one or more NIST Control records
                                 // fill in the compliance record for the control and add the compliance record to that control w/in the larger list
