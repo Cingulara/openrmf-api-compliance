@@ -33,9 +33,6 @@
                 "ASPNETCORE_ENVIRONMENT": "Development",
                 "ASPNETCORE_URLS": "http://*:8092",
                 "openstig-api-read-server" : "http://localhost:8084"
-                //"mongoConnection": "mongodb://openstig:openstig1234!@localhost/openstig?authSource=admin",
-                //"mongodb": "openstig",
-                //"natsserverurl" : "nats://192.168.11.46:4222"
             }
         },
         {

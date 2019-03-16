@@ -14,13 +14,9 @@ namespace openstig_api_compliance.Models.Compliance
         public string title { get; set; }
         public STIGtype type { get; set; }
         public string typeTitle { get { return Enum.GetName(typeof(STIGtype), type);} }
-        public string vulnId { get; set; }
-        public string vulnTitle { get; set;}
-        public string stigId { get; set; }
+        
         public string status { get; set; }
-        public string severity { get; set;}
-        public string hostName { get; set; }
-        public string domainName { get; set;}
+        public string hostName { get; set;}
 
         // the last time this was updated
         public DateTime updatedOn { get; set; }

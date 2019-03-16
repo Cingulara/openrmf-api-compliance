@@ -4,9 +4,10 @@ using System.Collections.Generic;
 namespace openstig_api_compliance.Models.Compliance
 {
     [Serializable]
-    public class NISTControl
+    public class NISTCompliance
     {
-        public NISTControl () {
+        public NISTCompliance () {
+            complianceRecords = new List<ComplianceRecord>();
         }
 
         // the control is the major piece to use here, AC-1, AU-9, etc.
@@ -19,5 +20,7 @@ namespace openstig_api_compliance.Models.Compliance
         public string version { get; set; }
         public string location { get; set; }
         public string CCI { get; set; }
+        public List<ComplianceRecord> complianceRecords { get; set; }
     }
+
 }
