@@ -16,6 +16,8 @@ namespace openstig_api_compliance.Models.Compliance
         // the index is the major control with all extra dots, dashes, and sub paragraphs
         public string index { get; set; }
         // This is the title of the index from the NIST site (tbd)
+        public string sortString { get; set; } // sort by this to get the listing correct
+
         public string title { get; set; }
         public string version { get; set; }
         public string location { get; set; }

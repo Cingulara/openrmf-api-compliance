@@ -46,44 +46,45 @@ namespace openstig_api_compliance.Classes
               if (art != null) {
                   host = !string.IsNullOrEmpty(art.CHECKLIST.ASSET.HOST_NAME)? art.CHECKLIST.ASSET.HOST_NAME : "";
                   foreach (VULN v in art.CHECKLIST.STIGS.iSTIG.VULN){
-                      // grab each CCI and then match to one or more NIST Control records
-                      // fill in the compliance record for the control and add the compliance record to that control w/in the larger list
-                      sd = v.STIG_DATA.Where(x => x.VULN_ATTRIBUTE == "CCI_REF").ToList();
-                      foreach (STIG_DATA d in sd) {
-                        foreach (NISTControl ctrl in controls.Where(x => x.CCI == d.ATTRIBUTE_DATA).ToList()) {
-                          // for each CTRL, if it already has a complianceList record for the checklist and this control, then update the record
-                          // if no record, then make a new one
-                          if (complianceList.Where(z => z.index == ctrl.index).Count() > 0 ) { // should at most be 1
-                            compliance = complianceList.Where(z => z.index == ctrl.index).First();
-                          }
-                          else {
-                            compliance = new NISTCompliance();
-                            compliance.index = ctrl.index; // add the control index
-                            compliance.title = "I need to go get these :(";
-                            complianceList.Add(compliance); // add it to the listing
-                          }
-                          // For the compliance record, does it have a listing for the checklist/artifactId
-                          if (compliance.complianceRecords.Where(c => c.artifactId == a.InternalId).Count() > 0) { // if a new record, will be 0
-                            rec = compliance.complianceRecords.Where(c => c.artifactId == a.InternalId).First(); //grab the the record to update the status
-                            rec.status = GenerateStatus(rec.status, v.STATUS);
-                          }
-                          else {
-                            rec = new ComplianceRecord();
-                            rec.artifactId = a.InternalId;
-                            rec.status = v.STATUS;
-                            rec.updatedOn = a.updatedOn.Value;
-                            rec.title = a.title;
-                            rec.type = a.type;
-                            rec.hostName = host;
-                            compliance.complianceRecords.Add(rec); // add the new compliance record to the control we are making
-                          }
+                    // grab each CCI and then match to one or more NIST Control records
+                    // fill in the compliance record for the control and add the compliance record to that control w/in the larger list
+                    sd = v.STIG_DATA.Where(x => x.VULN_ATTRIBUTE == "CCI_REF").ToList();
+                    foreach (STIG_DATA d in sd) {
+                      foreach (NISTControl ctrl in controls.Where(x => x.CCI == d.ATTRIBUTE_DATA).ToList()) {
+                        // for each CTRL, if it already has a complianceList record for the checklist and this control, then update the record
+                        // if no record, then make a new one
+                        if (complianceList.Where(z => z.index == ctrl.index).Count() > 0 ) { // should at most be 1
+                          compliance = complianceList.Where(z => z.index == ctrl.index).First();
+                        }
+                        else {
+                          compliance = new NISTCompliance();
+                          compliance.index = ctrl.index; // add the control index
+                          compliance.title = "I need to go get these :(";
+                          compliance.sortString = GenerateControlIndexSort(ctrl.index);
+                          complianceList.Add(compliance); // add it to the listing
+                        }
+                        // For the compliance record, does it have a listing for the checklist/artifactId
+                        if (compliance.complianceRecords.Where(c => c.artifactId == a.InternalId).Count() > 0) { // if a new record, will be 0
+                          rec = compliance.complianceRecords.Where(c => c.artifactId == a.InternalId).First(); //grab the the record to update the status
+                          rec.status = GenerateStatus(rec.status, v.STATUS);
+                        }
+                        else {
+                          rec = new ComplianceRecord();
+                          rec.artifactId = a.InternalId;
+                          rec.status = v.STATUS;
+                          rec.updatedOn = a.updatedOn.Value;
+                          rec.title = a.title;
+                          rec.type = a.type;
+                          rec.hostName = host;
+                          compliance.complianceRecords.Add(rec); // add the new compliance record to the control we are making
                         }
                       }
+                    }
                   }
                 }
               }
               // order by the index, which also groups them by the major control
-              return complianceList.OrderBy(x => x.index).ToList();
+              return complianceList.OrderBy(x => x.sortString).ToList();
           }
           else
               return null;
@@ -113,22 +114,42 @@ namespace openstig_api_compliance.Classes
         //     for each reference add a new control record to the list
         //   when done return the list of controls, somewhere around 6,368 of them
       private static List<NISTControl> CreateListOfNISTControls (List<CciItem> cciItems) {
-            List<NISTControl> controls = new List<NISTControl>();
-            NISTControl control;
-            foreach (CciItem item in cciItems) {
-                foreach (CciReference reference in item.references) {
-                    control = new NISTControl();
-                    control.CCI = item.cciId;
-                    control.control = reference.majorControl;
-                    control.index = reference.index;
-                    control.location = reference.location;
-                    control.title = reference.title;
-                    control.version = reference.version;
-                    // now add the unique record from the xml file to the list of all controls
-                    controls.Add(control); // add each one as the combination of index and CCI is unique
-                }
-            }
-            return controls;
+          List<NISTControl> controls = new List<NISTControl>();
+          NISTControl control;
+          foreach (CciItem item in cciItems) {
+              foreach (CciReference reference in item.references) {
+                  control = new NISTControl();
+                  control.CCI = item.cciId;
+                  control.control = reference.majorControl;
+                  control.index = reference.index;
+                  control.location = reference.location;
+                  control.title = reference.title;
+                  control.version = reference.version;
+                  // now add the unique record from the xml file to the list of all controls
+                  controls.Add(control); // add each one as the combination of index and CCI is unique
+              }
+          }
+          return controls;
+      }
+
+      private static string GenerateControlIndexSort(string index) {
+        string sort = "";
+        int dash = index.IndexOf('-')+1;
+        sort = index.Substring(0, dash); // gets you the XX and the -
+
+        int space = index.IndexOf(" ", sort.Length);
+        if (space > -1) {// there is something
+          index = index.Substring(0, space);
         }
+        int period = index.IndexOf(".", sort.Length);
+        if (period > -1) { // there is a period so shorten it
+          index = index.Substring(0, period);
+        }
+        if (index.Substring(dash).Length == 1) // need to pad the number with a 0}
+          sort += "0" + index.Substring(dash);
+        else 
+          sort += index.Substring(dash);
+        return sort;
+      }
     }
 }
