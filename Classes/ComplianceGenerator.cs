@@ -83,6 +83,15 @@ namespace openstig_api_compliance.Classes
                   }
                 }
               }
+              // fill the compliance list with those in the controls not yet in the complianceList
+              List<string> missingIndexes = controls.Where(x => !complianceList.Any(x2 => x2.index == x.index)).Select(y => y.index).Distinct().ToList();
+              foreach (string index in missingIndexes) {
+                compliance = new NISTCompliance();
+                compliance.index = index; // add the control index
+                compliance.title = "I need to go get these :(";
+                compliance.sortString = GenerateControlIndexSort(index);
+                complianceList.Add(compliance); // add it to the listing
+              }
               // order by the index, which also groups them by the major control
               return complianceList.OrderBy(x => x.sortString).ToList();
           }
