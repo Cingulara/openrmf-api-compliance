@@ -37,11 +37,13 @@ namespace openstig_api_compliance.Classes
           List<STIG_DATA> sd;
           Artifact art;
           ComplianceRecord rec;
-          ControlSet control;
+          List<ControlSet> controlSet;
+          ControlSet controlRecord;
           NISTCompliance compliance;
           string host = "";
           List<Artifact> checklists = WebClient.GetChecklistsBySystem(systemId).GetAwaiter().GetResult();
           if (checklists != null && checklists.Count > 0) {
+            controlSet = WebClient.GetControlRecords().GetAwaiter().GetResult();
             foreach (Artifact a in checklists) {
               art = WebClient.GetChecklistAsync(a.InternalId.ToString()).GetAwaiter().GetResult();
               if (art != null) {
@@ -61,12 +63,12 @@ namespace openstig_api_compliance.Classes
                           compliance = new NISTCompliance();
                           compliance.index = ctrl.index; // add the control index
                           compliance.title = "Unknown";
-                          control = WebClient.GetControlRecord(ctrl.index).GetAwaiter().GetResult();
-                          if (control != null) {
-                            if (!string.IsNullOrEmpty(control.subControlDescription))
-                              compliance.title = control.subControlDescription;
-                            else if (!string.IsNullOrEmpty(control.title))
-                              compliance.title = control.title;
+                          controlRecord = controlSet.Where(x => x.number == ctrl.index.Replace(" ", "") || x.subControlNumber == ctrl.index.Replace(" ", "")).FirstOrDefault();
+                          if (controlRecord != null) {
+                            if (!string.IsNullOrEmpty(controlRecord.subControlDescription))
+                              compliance.title = controlRecord.subControlDescription;
+                            else if (!string.IsNullOrEmpty(controlRecord.title))
+                              compliance.title = controlRecord.title;
                           }
                           compliance.sortString = GenerateControlIndexSort(ctrl.index);
                           complianceList.Add(compliance); // add it to the listing
@@ -97,12 +99,12 @@ namespace openstig_api_compliance.Classes
                 compliance = new NISTCompliance();
                 compliance.index = index; // add the control index
                 compliance.title = "Unknown";
-                control = WebClient.GetControlRecord(index).GetAwaiter().GetResult();
-                if (control != null) {
-                  if (!string.IsNullOrEmpty(control.subControlDescription))
-                    compliance.title = control.subControlDescription;
-                  else if (!string.IsNullOrEmpty(control.title))
-                    compliance.title = control.title;
+                controlRecord = controlSet.Where(x => x.number == index.Replace(" ", "") || x.subControlNumber == index.Replace(" ", "")).FirstOrDefault();
+                if (controlRecord != null) {
+                  if (!string.IsNullOrEmpty(controlRecord.subControlDescription))
+                    compliance.title = controlRecord.subControlDescription;
+                  else if (!string.IsNullOrEmpty(controlRecord.title))
+                    compliance.title = controlRecord.title;
                 }
                 compliance.sortString = GenerateControlIndexSort(index);
                 complianceList.Add(compliance); // add it to the listing
