@@ -37,6 +37,7 @@ namespace openstig_api_compliance.Classes
           List<STIG_DATA> sd;
           Artifact art;
           ComplianceRecord rec;
+          ControlSet control;
           NISTCompliance compliance;
           string host = "";
           List<Artifact> checklists = WebClient.GetChecklistsBySystem(systemId).GetAwaiter().GetResult();
@@ -59,7 +60,14 @@ namespace openstig_api_compliance.Classes
                         else {
                           compliance = new NISTCompliance();
                           compliance.index = ctrl.index; // add the control index
-                          compliance.title = "I need to go get these :(";
+                          compliance.title = "Unknown";
+                          control = WebClient.GetControlRecord(ctrl.index).GetAwaiter().GetResult();
+                          if (control != null) {
+                            if (!string.IsNullOrEmpty(control.subControlDescription))
+                              compliance.title = control.subControlDescription;
+                            else if (!string.IsNullOrEmpty(control.title))
+                              compliance.title = control.title;
+                          }
                           compliance.sortString = GenerateControlIndexSort(ctrl.index);
                           complianceList.Add(compliance); // add it to the listing
                         }
@@ -88,7 +96,13 @@ namespace openstig_api_compliance.Classes
               foreach (string index in missingIndexes) {
                 compliance = new NISTCompliance();
                 compliance.index = index; // add the control index
-                compliance.title = "I need to go get these :(";
+                compliance.title = "Unknown";
+                control = WebClient.GetControlRecord(index).GetAwaiter().GetResult();
+                if (control != null) {
+                  if (!string.IsNullOrEmpty(control.subControlDescription))
+                    compliance.title = control.subControlDescription;
+                  else if (!string.IsNullOrEmpty(control.title))
+                    compliance.title = control.title;
                 compliance.sortString = GenerateControlIndexSort(index);
                 complianceList.Add(compliance); // add it to the listing
               }
