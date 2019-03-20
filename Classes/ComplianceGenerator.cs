@@ -103,6 +103,7 @@ namespace openstig_api_compliance.Classes
                     compliance.title = control.subControlDescription;
                   else if (!string.IsNullOrEmpty(control.title))
                     compliance.title = control.title;
+                }
                 compliance.sortString = GenerateControlIndexSort(index);
                 complianceList.Add(compliance); // add it to the listing
               }
