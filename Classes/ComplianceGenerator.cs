@@ -47,86 +47,86 @@ namespace openstig_api_compliance.Classes
             foreach (Artifact a in checklists) {
               art = WebClient.GetChecklistAsync(a.InternalId.ToString()).GetAwaiter().GetResult();
               if (art != null) {
-                  host = !string.IsNullOrEmpty(art.CHECKLIST.ASSET.HOST_NAME)? art.CHECKLIST.ASSET.HOST_NAME : "";
-                  foreach (VULN v in art.CHECKLIST.STIGS.iSTIG.VULN){
-                    // grab each CCI and then match to one or more NIST Control records
-                    // fill in the compliance record for the control and add the compliance record to that control w/in the larger list
-                    sd = v.STIG_DATA.Where(x => x.VULN_ATTRIBUTE == "CCI_REF").ToList();
-                    foreach (STIG_DATA d in sd) {
-                      foreach (NISTControl ctrl in controls.Where(x => x.CCI == d.ATTRIBUTE_DATA).ToList()) {
-                        // for each CTRL, if it already has a complianceList record for the checklist and this control, then update the record
-                        // if no record, then make a new one
-                        if (complianceList.Where(z => z.index == ctrl.index).Count() > 0 ) { // should at most be 1
-                          compliance = complianceList.Where(z => z.index == ctrl.index).First();
+                host = !string.IsNullOrEmpty(art.CHECKLIST.ASSET.HOST_NAME)? art.CHECKLIST.ASSET.HOST_NAME : "";
+                foreach (VULN v in art.CHECKLIST.STIGS.iSTIG.VULN){
+                  // grab each CCI and then match to one or more NIST Control records
+                  // fill in the compliance record for the control and add the compliance record to that control w/in the larger list
+                  sd = v.STIG_DATA.Where(x => x.VULN_ATTRIBUTE == "CCI_REF").ToList();
+                  foreach (STIG_DATA d in sd) {
+                    foreach (NISTControl ctrl in controls.Where(x => x.CCI == d.ATTRIBUTE_DATA).ToList()) {
+                      // for each CTRL, if it already has a complianceList record for the checklist and this control, then update the record
+                      // if no record, then make a new one
+                      if (complianceList.Where(z => z.index == ctrl.index).Count() > 0 ) { // should at most be 1
+                        compliance = complianceList.Where(z => z.index == ctrl.index).First();
+                      }
+                      else {
+                        compliance = new NISTCompliance();
+                        compliance.index = ctrl.index; // add the control index
+                        compliance.title = "Unknown";
+                        controlRecord = controlSet.Where(x => x.number == ctrl.index.Replace(" ", "") || x.subControlNumber == ctrl.index.Replace(" ", "")).FirstOrDefault();
+                        if (controlRecord != null) {
+                          if (!string.IsNullOrEmpty(controlRecord.subControlDescription))
+                            compliance.title = controlRecord.subControlDescription;
+                          else if (!string.IsNullOrEmpty(controlRecord.title))
+                            compliance.title = controlRecord.title;
                         }
-                        else {
-                          compliance = new NISTCompliance();
-                          compliance.index = ctrl.index; // add the control index
-                          compliance.title = "Unknown";
-                          controlRecord = controlSet.Where(x => x.number == ctrl.index.Replace(" ", "") || x.subControlNumber == ctrl.index.Replace(" ", "")).FirstOrDefault();
+                        else { // get the generic family name of the control if any
+                          controlRecord = controlSet.Where(x => x.number == ctrl.index.Substring(0, GetFirstIndex(ctrl.index)) || 
+                            x.subControlNumber == ctrl.index.Substring(0, GetFirstIndex(ctrl.index))).FirstOrDefault();
                           if (controlRecord != null) {
-                            if (!string.IsNullOrEmpty(controlRecord.subControlDescription))
-                              compliance.title = controlRecord.subControlDescription;
-                            else if (!string.IsNullOrEmpty(controlRecord.title))
+                            if (!string.IsNullOrEmpty(controlRecord.title))
                               compliance.title = controlRecord.title;
                           }
-                          else { // get the generic family name of the control if any
-                            controlRecord = controlSet.Where(x => x.number == ctrl.index.Substring(0, GetFirstIndex(ctrl.index)) || 
-                              x.subControlNumber == ctrl.index.Substring(0, GetFirstIndex(ctrl.index))).FirstOrDefault();
-                            if (controlRecord != null) {
-                              if (!string.IsNullOrEmpty(controlRecord.title))
-                                compliance.title = controlRecord.title;
-                            }
-                          }
-                          compliance.sortString = GenerateControlIndexSort(ctrl.index);
-                          complianceList.Add(compliance); // add it to the listing
                         }
-                        // For the compliance record, does it have a listing for the checklist/artifactId
-                        if (compliance.complianceRecords.Where(c => c.artifactId == a.InternalId).Count() > 0) { // if a new record, will be 0
-                          rec = compliance.complianceRecords.Where(c => c.artifactId == a.InternalId).First(); //grab the the record to update the status
-                          rec.status = GenerateStatus(rec.status, v.STATUS);
-                        }
-                        else {
-                          rec = new ComplianceRecord();
-                          rec.artifactId = a.InternalId;
-                          rec.status = v.STATUS;
-                          rec.updatedOn = a.updatedOn.Value;
-                          rec.title = a.title;
-                          rec.type = a.type;
-                          rec.hostName = host;
-                          compliance.complianceRecords.Add(rec); // add the new compliance record to the control we are making
-                        }
+                        compliance.sortString = GenerateControlIndexSort(ctrl.index);
+                        complianceList.Add(compliance); // add it to the listing
+                      }
+                      // For the compliance record, does it have a listing for the checklist/artifactId
+                      if (compliance.complianceRecords.Where(c => c.artifactId == a.InternalId).Count() > 0) { // if a new record, will be 0
+                        rec = compliance.complianceRecords.Where(c => c.artifactId == a.InternalId).First(); //grab the the record to update the status
+                        rec.status = GenerateStatus(rec.status, v.STATUS);
+                      }
+                      else {
+                        rec = new ComplianceRecord();
+                        rec.artifactId = a.InternalId;
+                        rec.status = v.STATUS;
+                        rec.updatedOn = a.updatedOn.Value;
+                        rec.title = a.title;
+                        rec.type = a.type;
+                        rec.hostName = host;
+                        compliance.complianceRecords.Add(rec); // add the new compliance record to the control we are making
                       }
                     }
                   }
                 }
               }
-              // fill the compliance list with those in the controls not yet in the complianceList
-              List<string> missingIndexes = controls.Where(x => !complianceList.Any(x2 => x2.index == x.index)).Select(y => y.index).Distinct().ToList();
-              foreach (string index in missingIndexes) {
-                compliance = new NISTCompliance();
-                compliance.index = index; // add the control index
-                compliance.title = "Unknown";
-                controlRecord = controlSet.Where(x => x.number == index.Replace(" ", "") || x.subControlNumber == index.Replace(" ", "")).FirstOrDefault();
+            }
+            // fill the compliance list with those in the controls not yet in the complianceList
+            List<string> missingIndexes = controls.Where(x => !complianceList.Any(x2 => x2.index == x.index)).Select(y => y.index).Distinct().ToList();
+            foreach (string index in missingIndexes) {
+              compliance = new NISTCompliance();
+              compliance.index = index; // add the control index
+              compliance.title = "Unknown";
+              controlRecord = controlSet.Where(x => x.number == index.Replace(" ", "") || x.subControlNumber == index.Replace(" ", "")).FirstOrDefault();
+              if (controlRecord != null) {
+                if (!string.IsNullOrEmpty(controlRecord.subControlDescription))
+                  compliance.title = controlRecord.subControlDescription;
+                else if (!string.IsNullOrEmpty(controlRecord.title))
+                  compliance.title = controlRecord.title;
+              }
+              else { // get the generic family name of the control if any
+                controlRecord = controlSet.Where(x => x.number == index.Substring(0, GetFirstIndex(index)) || 
+                  x.subControlNumber == index.Substring(0, GetFirstIndex(index))).FirstOrDefault();
                 if (controlRecord != null) {
-                  if (!string.IsNullOrEmpty(controlRecord.subControlDescription))
-                    compliance.title = controlRecord.subControlDescription;
-                  else if (!string.IsNullOrEmpty(controlRecord.title))
+                  if (!string.IsNullOrEmpty(controlRecord.title))
                     compliance.title = controlRecord.title;
                 }
-                else { // get the generic family name of the control if any
-                  controlRecord = controlSet.Where(x => x.number == index.Substring(0, GetFirstIndex(index)) || 
-                    x.subControlNumber == index.Substring(0, GetFirstIndex(index))).FirstOrDefault();
-                  if (controlRecord != null) {
-                    if (!string.IsNullOrEmpty(controlRecord.title))
-                      compliance.title = controlRecord.title;
-                  }
-                }
-                compliance.sortString = GenerateControlIndexSort(index);
-                complianceList.Add(compliance); // add it to the listing
               }
-              // order by the index, which also groups them by the major control
-              return complianceList.OrderBy(x => x.sortString).ToList();
+              compliance.sortString = GenerateControlIndexSort(index);
+              complianceList.Add(compliance); // add it to the listing
+            }
+            // order by the index, which also groups them by the major control
+            return complianceList.OrderBy(x => x.sortString).ToList();
           }
           else
               return null;
