@@ -70,6 +70,14 @@ namespace openstig_api_compliance.Classes
                             else if (!string.IsNullOrEmpty(controlRecord.title))
                               compliance.title = controlRecord.title;
                           }
+                          else { // get the generic family name of the control if any
+                            controlRecord = controlSet.Where(x => x.number == ctrl.index.Substring(0, GetFirstIndex(ctrl.index)) || 
+                              x.subControlNumber == ctrl.index.Substring(0, GetFirstIndex(ctrl.index))).FirstOrDefault();
+                            if (controlRecord != null) {
+                              if (!string.IsNullOrEmpty(controlRecord.title))
+                                compliance.title = controlRecord.title;
+                            }
+                          }
                           compliance.sortString = GenerateControlIndexSort(ctrl.index);
                           complianceList.Add(compliance); // add it to the listing
                         }
@@ -106,6 +114,14 @@ namespace openstig_api_compliance.Classes
                   else if (!string.IsNullOrEmpty(controlRecord.title))
                     compliance.title = controlRecord.title;
                 }
+                else { // get the generic family name of the control if any
+                  controlRecord = controlSet.Where(x => x.number == index.Substring(0, GetFirstIndex(index)) || 
+                    x.subControlNumber == index.Substring(0, GetFirstIndex(index))).FirstOrDefault();
+                  if (controlRecord != null) {
+                    if (!string.IsNullOrEmpty(controlRecord.title))
+                      compliance.title = controlRecord.title;
+                  }
+                }
                 compliance.sortString = GenerateControlIndexSort(index);
                 complianceList.Add(compliance); // add it to the listing
               }
@@ -121,6 +137,21 @@ namespace openstig_api_compliance.Classes
         }
       }
 
+      private static int GetFirstIndex(string term) {
+          int space = term.IndexOf(" ");
+          int period = term.IndexOf(".");
+          if (space < 0 && period < 0)
+              return -1;
+          else if (space > 0 && period > 0 && space < period ) // see which we hit first
+              return space;
+          else if (space > 0 && period > 0 && space > period )
+              return period;
+          else if (space > 0) 
+              return space;
+          else 
+              return period;
+      }
+      
       // use the rules in https://github.com/Cingulara/openstig-api-compliance/issues/1: 
       //   if anything is open, mark it open
       //   else if anything is not reviewed, mark it not reviewed
