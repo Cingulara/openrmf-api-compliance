@@ -41,6 +41,8 @@ namespace openstig_api_compliance.Classes
           ControlSet controlRecord;
           NISTCompliance compliance;
           string host = "";
+          int parentIndex = 0;
+
           List<Artifact> checklists = WebClient.GetChecklistsBySystem(systemId).GetAwaiter().GetResult();
           if (checklists != null && checklists.Count > 0) {
             controlSet = WebClient.GetControlRecords().GetAwaiter().GetResult();
@@ -71,11 +73,14 @@ namespace openstig_api_compliance.Classes
                             compliance.title = controlRecord.title;
                         }
                         else { // get the generic family name of the control if any
-                          controlRecord = controlSet.Where(x => x.number == ctrl.index.Substring(0, GetFirstIndex(ctrl.index)) || 
-                            x.subControlNumber == ctrl.index.Substring(0, GetFirstIndex(ctrl.index))).FirstOrDefault();
-                          if (controlRecord != null) {
-                            if (!string.IsNullOrEmpty(controlRecord.title))
-                              compliance.title = controlRecord.title;
+                          parentIndex = GetFirstIndex(ctrl.index);
+                          if (parentIndex > 0) {
+                            controlRecord = controlSet.Where(x => x.number == ctrl.index.Substring(0, parentIndex) || 
+                              x.subControlNumber == ctrl.index.Substring(0, parentIndex)).FirstOrDefault();
+                            if (controlRecord != null) {
+                              if (!string.IsNullOrEmpty(controlRecord.title))
+                                compliance.title = controlRecord.title;
+                            }
                           }
                         }
                         compliance.sortString = GenerateControlIndexSort(ctrl.index);
@@ -115,11 +120,17 @@ namespace openstig_api_compliance.Classes
                   compliance.title = controlRecord.title;
               }
               else { // get the generic family name of the control if any
-                controlRecord = controlSet.Where(x => x.number == index.Substring(0, GetFirstIndex(index)) || 
-                  x.subControlNumber == index.Substring(0, GetFirstIndex(index))).FirstOrDefault();
-                if (controlRecord != null) {
-                  if (!string.IsNullOrEmpty(controlRecord.title))
-                    compliance.title = controlRecord.title;
+                parentIndex = GetFirstIndex(index);
+                if (parentIndex > 0) {
+                  controlRecord = controlSet.Where(x => x.number == index.Substring(0, GetFirstIndex(index)) || 
+                    x.subControlNumber == index.Substring(0, GetFirstIndex(index))).FirstOrDefault();
+                  if (controlRecord != null) {
+                    if (!string.IsNullOrEmpty(controlRecord.title))
+                      compliance.title = controlRecord.title;
+                  }
+                }
+                else {
+                  Console.WriteLine(string.Format("index not found: {0}", index));
                 }
               }
               compliance.sortString = GenerateControlIndexSort(index);
