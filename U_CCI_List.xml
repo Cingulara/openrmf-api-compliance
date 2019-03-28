@@ -11184,7 +11184,7 @@
 			<type>policy</type>
 			<references>
 				<reference creator="NIST" title="NIST SP 800-53" version="3" location="http://csrc.nist.gov/publications/PubsSPs.html" index="CA-5 a" />
-				<reference creator="NIST" title="NIST SP 800-53A" version="1" location="http://csrc.nist.gov/publications/PubsSPs.html" index="CA-5-1 (i)  and  (ii)" />
+				<reference creator="NIST" title="NIST SP 800-53A" version="1" location="http://csrc.nist.gov/publications/PubsSPs.html" index="CA-5(1) (i)  and  (ii)" />
 				<reference creator="NIST" title="NIST SP 800-53 Revision 4" version="4" location="http://csrc.nist.gov/publications/PubsSPs.html" index="CA-5 a" />
 			</references>
 		</cci_item>
@@ -11196,7 +11196,7 @@
 			<type>policy</type>
 			<references>
 				<reference creator="NIST" title="NIST SP 800-53" version="3" location="http://csrc.nist.gov/publications/PubsSPs.html" index="CA-5 b" />
-				<reference creator="NIST" title="NIST SP 800-53A" version="1" location="http://csrc.nist.gov/publications/PubsSPs.html" index="CA-5-1 (iii)" />
+				<reference creator="NIST" title="NIST SP 800-53A" version="1" location="http://csrc.nist.gov/publications/PubsSPs.html" index="CA-5(1) (iii)" />
 				<reference creator="NIST" title="NIST SP 800-53 Revision 4" version="4" location="http://csrc.nist.gov/publications/PubsSPs.html" index="CA-5 b" />
 			</references>
 		</cci_item>
@@ -11208,7 +11208,7 @@
 			<type>policy</type>
 			<references>
 				<reference creator="NIST" title="NIST SP 800-53" version="3" location="http://csrc.nist.gov/publications/PubsSPs.html" index="CA-5 b" />
-				<reference creator="NIST" title="NIST SP 800-53A" version="1" location="http://csrc.nist.gov/publications/PubsSPs.html" index="CA-5-1 (iv)" />
+				<reference creator="NIST" title="NIST SP 800-53A" version="1" location="http://csrc.nist.gov/publications/PubsSPs.html" index="CA-5(1) (iv)" />
 				<reference creator="NIST" title="NIST SP 800-53 Revision 4" version="4" location="http://csrc.nist.gov/publications/PubsSPs.html" index="CA-5 b" />
 			</references>
 		</cci_item>
