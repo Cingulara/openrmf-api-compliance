@@ -3,13 +3,13 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
     <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
-    <RootNamespace>openstig_read_api</RootNamespace>
+    <RootNamespace>openstig_compliance_api</RootNamespace>
     <PublishWithAspNetCoreTargetManifest>false</PublishWithAspNetCoreTargetManifest>
     <ProjectGuid>{6589fd80-18ff-45c9-bf50-f7007fa66bc2}</ProjectGuid>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>$(NoWarn);1591</NoWarn>
-    <Version>0.1</Version>
-    <InformationalVersion>This is an alpha of the openSTIG Tool Read API from Cingulara</InformationalVersion>
+    <Version>0.5</Version>
+    <InformationalVersion>This is a beta of the openSTIG Tool Compliance API from Cingulara</InformationalVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -23,7 +23,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="mongodb.driver" Version="2.7.2" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
     <PackageReference Include="NLog" Version="4.5.11" />
     <PackageReference Include="NLog.Web.AspNetCore" Version="4.7.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="4.0.1" />
@@ -32,6 +32,7 @@
 
   <ItemGroup>
     <Content Update="nlog.config" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="U_CCI_List.xml" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
   
 </Project>
