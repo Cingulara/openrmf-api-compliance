@@ -31,10 +31,9 @@
             },
             "env": {
                 "ASPNETCORE_ENVIRONMENT": "Development",
-                "ASPNETCORE_URLS": "http://*:8092"
-                //"mongoConnection": "mongodb://openstig:openstig1234!@localhost/openstig?authSource=admin",
-                //"mongodb": "openstig",
-                //"natsserverurl" : "nats://192.168.11.46:4222"
+                "ASPNETCORE_URLS": "http://*:8092",
+                "openstig-api-read-server" : "http://localhost:8084",
+                "openstig-api-controls-server": "http://localhost:8094"
             }
         },
         {

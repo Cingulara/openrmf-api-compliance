@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 
 
-namespace openstig_api_compliance.Models
+namespace openstig_api_compliance.Models.Artifact
 {
 
     public class CHECKLIST {

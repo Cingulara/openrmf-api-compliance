@@ -1,35 +1,13 @@
-# openstig-api-read
-This is the openSTIG Read API for reading a checklist and all its metadata we store. It has two calls.
+# openstig-api-compliance
+This is the openSTIG Compliance API that reads in all system checklists via the openSTIG Read API, 
+and for each matches the 1-or-more CCI per STIG vulnerability to the NIST to CCI listing based on 
+the XML file from DISA. It then generates a report of Open (STIG is open or not reviewed or Closed
+(STIG is Not a Finding or N/A) grouped by the NIST major controls for the system based on the C-I-A 
+low/moderate/high classification.
 
-GET to / to list all records
-GET to /{id} to get a record
-GET to /download/{id} to download the CKL file to use in the STIG viewer
+GET to /system/systemId to generate the NIST major controls listing with all relevant STIG checklist data
 
 /swagger/ gives you the API structure.
 
 ## Making your local Docker image
-docker build --rm -t openstig-api-read:0.1 .
-
-## creating the user
-* ~/mongodb/bin/mongo 'mongodb://root:myp2ssw0rd@localhost'
-* use admin
-* db.createUser({ user: "openstig" , pwd: "openstig1234!", roles: ["readWriteAnyDatabase"]});
-* use openstig
-* db.createCollection("Artifacts");
-
-## connecting to the database collection straight
-~/mongodb/bin/mongo 'mongodb://openstig:openstig1234!@localhost/openstig?authSource=admin'
-
-## Messaging Platform
-Using NATS from Synadia to have a messaging backbone and eventual consistency. Currently publishing to these known items:
-* openstig.save.new with payload (new Guid Id)
-* openstig.save.update with payload (new Guid Id)
-* openstig.upload.new with payload (new Guid Id)
-* openstig.upload.update with payload (new Guid Id)
-
-More will follow as this expands for auditing, logging, etc.
-
-### How to run NATS
-* docker run --rm --name nats-main -p 4222:4222 -p 6222:6222 -p 8222:8222 nats
-* this is the default and lets you run a NATS server version 1.2.0 (as of 8/2018)
-* just runs in memory and no streaming (that is separate)
+docker build --rm -t openstig-api-compliance:0.4 .
