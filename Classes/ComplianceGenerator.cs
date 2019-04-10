@@ -58,19 +58,21 @@ namespace openstig_api_compliance.Classes
                     foreach (NISTControl ctrl in controls.Where(x => x.CCI == d.ATTRIBUTE_DATA).ToList()) {
                       // for each CTRL, if it already has a complianceList record for the checklist and this control, then update the record
                       // if no record, then make a new one
-                      if (complianceList.Where(z => z.index == ctrl.index).Count() > 0 ) { // should at most be 1
-                        compliance = complianceList.Where(z => z.index == ctrl.index).First();
+                      if (complianceList.Where(z => z.control == ctrl.control).Count() > 0 ) { // should at most be 1
+                        compliance = complianceList.Where(z => z.control == ctrl.control).First();
                       }
                       else {
                         compliance = new NISTCompliance();
-                        compliance.index = ctrl.index; // add the control index
+                        //compliance.index = ctrl.index; // add the control index
+                        compliance.control = ctrl.control; // major control family
                         compliance.title = "Unknown";
-                        controlRecord = controlSet.Where(x => x.number == ctrl.index.Replace(" ", "") || x.subControlNumber == ctrl.index.Replace(" ", "")).FirstOrDefault();
+                        //controlRecord = controlSet.Where(x => x.number == ctrl.index.Replace(" ", "") || x.subControlNumber == ctrl.index.Replace(" ", "")).FirstOrDefault();
+                        controlRecord = controlSet.Where(x => x.number == ctrl.control.Replace(" ", "")).FirstOrDefault();
                         if (controlRecord != null) {
-                          if (!string.IsNullOrEmpty(controlRecord.subControlDescription))
-                            compliance.title = controlRecord.subControlDescription;
-                          else if (!string.IsNullOrEmpty(controlRecord.title))
-                            compliance.title = controlRecord.title;
+                        //   if (!string.IsNullOrEmpty(controlRecord.subControlDescription))
+                        //     compliance.title = controlRecord.subControlDescription;
+                        //   else if (!string.IsNullOrEmpty(controlRecord.title))
+                          compliance.title = controlRecord.title;
                         }
                         else { // get the generic family name of the control if any
                           parentIndex = GetFirstIndex(ctrl.index);
@@ -107,16 +109,18 @@ namespace openstig_api_compliance.Classes
               }
             }
             // fill the compliance list with those in the controls not yet in the complianceList
-            List<string> missingIndexes = controls.Where(x => !complianceList.Any(x2 => x2.index == x.index)).Select(y => y.index).Distinct().ToList();
+            //List<string> missingIndexes = controls.Where(x => !complianceList.Any(x2 => x2.index == x.index)).Select(y => y.index).Distinct().ToList();
+            List<string> missingIndexes = controls.Where(x => !complianceList.Any(x2 => x2.control == x.control)).Select(y => y.control).Distinct().ToList();
             foreach (string index in missingIndexes) {
               compliance = new NISTCompliance();
-              compliance.index = index; // add the control index
+              compliance.control = index; // add the control family
               compliance.title = "Unknown";
-              controlRecord = controlSet.Where(x => x.number == index.Replace(" ", "") || x.subControlNumber == index.Replace(" ", "")).FirstOrDefault();
+              //controlRecord = controlSet.Where(x => x.number == index.Replace(" ", "") || x.subControlNumber == index.Replace(" ", "")).FirstOrDefault();
+              controlRecord = controlSet.Where(x => x.number == index.Replace(" ", "")).FirstOrDefault();
               if (controlRecord != null) {
-                if (!string.IsNullOrEmpty(controlRecord.subControlDescription))
-                  compliance.title = controlRecord.subControlDescription;
-                else if (!string.IsNullOrEmpty(controlRecord.title))
+                // if (!string.IsNullOrEmpty(controlRecord.subControlDescription))
+                //   compliance.title = controlRecord.subControlDescription;
+                // else if (!string.IsNullOrEmpty(controlRecord.title))
                   compliance.title = controlRecord.title;
               }
               else { // get the generic family name of the control if any
@@ -130,7 +134,7 @@ namespace openstig_api_compliance.Classes
                   }
                 }
                 else {
-                  Console.WriteLine(string.Format("index not found: {0}", index));
+                  Console.WriteLine(string.Format("control not found: {0}", index));
                 }
               }
               compliance.sortString = GenerateControlIndexSort(index);
