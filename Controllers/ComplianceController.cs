@@ -63,7 +63,7 @@ namespace openstig_api_compliance.Controllers
                 try {
                     var result = CCIListGenerator.GetCCIListing(control);
                     if (result != null && result.Result != null && result.Result.Count > 0)
-                        return Ok(result);
+                        return Ok(result.Result);
                     else
                         return NotFound(); // bad system reference
                 }
