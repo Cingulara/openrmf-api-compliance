@@ -58,19 +58,21 @@ namespace openstig_api_compliance.Classes
                     foreach (NISTControl ctrl in controls.Where(x => x.CCI == d.ATTRIBUTE_DATA).ToList()) {
                       // for each CTRL, if it already has a complianceList record for the checklist and this control, then update the record
                       // if no record, then make a new one
-                      if (complianceList.Where(z => z.index == ctrl.index).Count() > 0 ) { // should at most be 1
-                        compliance = complianceList.Where(z => z.index == ctrl.index).First();
+                      if (complianceList.Where(z => z.control == ctrl.control).Count() > 0 ) { // should at most be 1
+                        compliance = complianceList.Where(z => z.control == ctrl.control).First();
                       }
                       else {
                         compliance = new NISTCompliance();
-                        compliance.index = ctrl.index; // add the control index
+                        //compliance.index = ctrl.index; // add the control index
+                        compliance.control = ctrl.control; // major control family
                         compliance.title = "Unknown";
-                        controlRecord = controlSet.Where(x => x.number == ctrl.index.Replace(" ", "") || x.subControlNumber == ctrl.index.Replace(" ", "")).FirstOrDefault();
+                        //controlRecord = controlSet.Where(x => x.number == ctrl.index.Replace(" ", "") || x.subControlNumber == ctrl.index.Replace(" ", "")).FirstOrDefault();
+                        controlRecord = controlSet.Where(x => x.number == ctrl.control.Replace(" ", "")).FirstOrDefault();
                         if (controlRecord != null) {
-                          if (!string.IsNullOrEmpty(controlRecord.subControlDescription))
-                            compliance.title = controlRecord.subControlDescription;
-                          else if (!string.IsNullOrEmpty(controlRecord.title))
-                            compliance.title = controlRecord.title;
+                        //   if (!string.IsNullOrEmpty(controlRecord.subControlDescription))
+                        //     compliance.title = controlRecord.subControlDescription;
+                        //   else if (!string.IsNullOrEmpty(controlRecord.title))
+                          compliance.title = controlRecord.title;
                         }
                         else { // get the generic family name of the control if any
                           parentIndex = GetFirstIndex(ctrl.index);
@@ -107,16 +109,18 @@ namespace openstig_api_compliance.Classes
               }
             }
             // fill the compliance list with those in the controls not yet in the complianceList
-            List<string> missingIndexes = controls.Where(x => !complianceList.Any(x2 => x2.index == x.index)).Select(y => y.index).Distinct().ToList();
+            //List<string> missingIndexes = controls.Where(x => !complianceList.Any(x2 => x2.index == x.index)).Select(y => y.index).Distinct().ToList();
+            List<string> missingIndexes = controls.Where(x => !complianceList.Any(x2 => x2.control == x.control)).Select(y => y.control).Distinct().ToList();
             foreach (string index in missingIndexes) {
               compliance = new NISTCompliance();
-              compliance.index = index; // add the control index
+              compliance.control = index; // add the control family
               compliance.title = "Unknown";
-              controlRecord = controlSet.Where(x => x.number == index.Replace(" ", "") || x.subControlNumber == index.Replace(" ", "")).FirstOrDefault();
+              //controlRecord = controlSet.Where(x => x.number == index.Replace(" ", "") || x.subControlNumber == index.Replace(" ", "")).FirstOrDefault();
+              controlRecord = controlSet.Where(x => x.number == index.Replace(" ", "")).FirstOrDefault();
               if (controlRecord != null) {
-                if (!string.IsNullOrEmpty(controlRecord.subControlDescription))
-                  compliance.title = controlRecord.subControlDescription;
-                else if (!string.IsNullOrEmpty(controlRecord.title))
+                // if (!string.IsNullOrEmpty(controlRecord.subControlDescription))
+                //   compliance.title = controlRecord.subControlDescription;
+                // else if (!string.IsNullOrEmpty(controlRecord.title))
                   compliance.title = controlRecord.title;
               }
               else { // get the generic family name of the control if any
@@ -130,7 +134,7 @@ namespace openstig_api_compliance.Classes
                   }
                 }
                 else {
-                  Console.WriteLine(string.Format("index not found: {0}", index));
+                  Console.WriteLine(string.Format("control not found: {0}", index));
                 }
               }
               compliance.sortString = GenerateControlIndexSort(index);
@@ -165,15 +169,21 @@ namespace openstig_api_compliance.Classes
       
       // use the rules in https://github.com/Cingulara/openstig-api-compliance/issues/1: 
       //   if anything is open, mark it open
-      //   else if anything is not reviewed, mark it not reviewed
-      //   else if the rest are not applicable and not a finding, mark it green (should be a catch-all else)
+      //   else if the old one is not open or N/R
+      //         anything is not reviewed, mark it not reviewed
+      //         else if old is notafinding and new is notafinding or not_reviewed, not a finding
       private static string GenerateStatus(string oldStatus, string newStatus) {
         if (newStatus.ToLower() == "open")
-          return "open";
-        else if (newStatus.ToLower() == "not_reviewed")
-          return "not_reviewed";
-        else 
-          return "notafinding";
+          return newStatus.ToLower();
+        else if (oldStatus.ToLower() != "open" && oldStatus.ToLower() != "not_reviewed") { // otherwise keep it the same
+          // this was already not_reviewed or it was notafinding from being NaF or N/A
+          if (newStatus.ToLower() == "not_reviewed")
+            return newStatus.ToLower();
+          else
+            return "notafinding"; // catch all cause it is either NaF or N/A
+        }
+        else
+          return oldStatus.ToLower(); // was already marked open or not_reviewed
       }
 
       // for each of the CCI items in the list 

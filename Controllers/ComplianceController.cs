@@ -55,5 +55,25 @@ namespace openstig_api_compliance.Controllers
                 return BadRequest(); // no term entered
         }
 
+        // GET the CCIs related to a NIST higher level control
+        [HttpGet("cci/{control}")]
+        public async Task<IActionResult> GetCCIListingByControl(string control)
+        {
+            if (!string.IsNullOrEmpty(control)) {
+                try {
+                    var result = CCIListGenerator.GetCCIListing(control);
+                    if (result != null && result.Result != null && result.Result.Count > 0)
+                        return Ok(result.Result);
+                    else
+                        return NotFound(); // bad system reference
+                }
+                catch (Exception ex) {
+                    _logger.LogError(ex, "Error listing all CCIs for control {0}", control);
+                    return BadRequest();
+                }
+            }
+            else
+                return BadRequest(); // no term entered
+        }
     }
 }

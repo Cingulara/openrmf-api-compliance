@@ -3130,7 +3130,7 @@
 			<type>policy</type>
 			<references>
 				<reference creator="NIST" title="NIST SP 800-53" version="3" location="http://csrc.nist.gov/publications/PubsSPs.html" index="CA-7 (2)" />
-				<reference creator="NIST" title="NIST SP 800-53A" version="1" location="http://csrc.nist.gov/publications/PubsSPs.html" index="CA-7(2).1 (i)" />
+				<reference creator="NIST" title="NIST SP 800-53A" version="1" location="http://csrc.nist.gov/publications/PubsSPs.html" index="CA-7 (2).1 (i)" />
 				<reference creator="NIST" title="NIST SP 800-53 Revision 4" version="4" location="http://csrc.nist.gov/publications/PubsSPs.html" index="CA-2 (2)" />
 			</references>
 		</cci_item>
