@@ -169,15 +169,21 @@ namespace openstig_api_compliance.Classes
       
       // use the rules in https://github.com/Cingulara/openstig-api-compliance/issues/1: 
       //   if anything is open, mark it open
-      //   else if anything is not reviewed, mark it not reviewed
-      //   else if the rest are not applicable and not a finding, mark it green (should be a catch-all else)
+      //   else if the old one is not open or N/R
+      //         anything is not reviewed, mark it not reviewed
+      //         else if old is notafinding and new is notafinding or not_reviewed, not a finding
       private static string GenerateStatus(string oldStatus, string newStatus) {
         if (newStatus.ToLower() == "open")
-          return "open";
-        else if (newStatus.ToLower() == "not_reviewed")
-          return "not_reviewed";
-        else 
-          return "notafinding";
+          return newStatus.ToLower();
+        else if (oldStatus.ToLower() != "open" && oldStatus.ToLower() != "not_reviewed") { // otherwise keep it the same
+          // this was already not_reviewed or it was notafinding from being NaF or N/A
+          if (newStatus.ToLower() == "not_reviewed")
+            return newStatus.ToLower();
+          else
+            return "notafinding"; // catch all cause it is either NaF or N/A
+        }
+        else
+          return oldStatus.ToLower(); // was already marked open or not_reviewed
       }
 
       // for each of the CCI items in the list 
