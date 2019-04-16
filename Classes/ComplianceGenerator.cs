@@ -167,7 +167,7 @@ namespace openstig_api_compliance.Classes
               return period;
       }
       
-      // use the rules in https://github.com/Cingulara/openstig-api-compliance/issues/1: 
+      // use the rules in https://github.com/Cingulara/openrmf-api-compliance/issues/1: 
       //   if anything is open, mark it open
       //   else if the old one is not open or N/R
       //         anything is not reviewed, mark it not reviewed

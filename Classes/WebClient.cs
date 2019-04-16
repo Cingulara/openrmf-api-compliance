@@ -23,7 +23,7 @@ namespace openstig_api_compliance.Classes
                 {
                     client.DefaultRequestHeaders.Accept.Clear();
                     client.DefaultRequestHeaders.Add("Accept", "application/json");
-                    string hosturl = Environment.GetEnvironmentVariable("openstig-api-read-server");
+                    string hosturl = Environment.GetEnvironmentVariable("openrmf-api-read-server");
                     HttpResponseMessage response = await client.GetAsync(hosturl + "/systems/" + System.Uri.EscapeUriString(systemId));
                     response.EnsureSuccessStatusCode();
                     string responseBody = await response.Content.ReadAsStringAsync();
@@ -52,7 +52,7 @@ namespace openstig_api_compliance.Classes
                 {
                     client.DefaultRequestHeaders.Accept.Clear();
                     client.DefaultRequestHeaders.Add("Accept", "application/xml");
-                    string hosturl = Environment.GetEnvironmentVariable("openstig-api-read-server");
+                    string hosturl = Environment.GetEnvironmentVariable("openrmf-api-read-server");
                     Console.WriteLine("URL: {0}", hosturl + "/" + artifactId);
                     HttpResponseMessage response = await client.GetAsync(hosturl + "/" + artifactId);
                     response.EnsureSuccessStatusCode();
@@ -93,7 +93,7 @@ namespace openstig_api_compliance.Classes
                 {
                     client.DefaultRequestHeaders.Accept.Clear();
                     client.DefaultRequestHeaders.Add("Accept", "application/json");
-                    string hosturl = Environment.GetEnvironmentVariable("openstig-api-controls-server");
+                    string hosturl = Environment.GetEnvironmentVariable("openrmf-api-controls-server");
                     Console.WriteLine("URL: {0}", hosturl + "/");
                     HttpResponseMessage response = await client.GetAsync(hosturl + "/");
                     response.EnsureSuccessStatusCode();
