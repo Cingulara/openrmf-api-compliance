@@ -18,7 +18,7 @@ namespace openstig_api_compliance.Classes
 {
     public static class ComplianceGenerator 
     {
-      public static async Task<List<NISTCompliance>> GetSystemControls(string systemId)
+      public static async Task<List<NISTCompliance>> GetSystemControls(string systemId, string filter)
       {
         // for each system
         //  for each checklist in the system
@@ -45,7 +45,7 @@ namespace openstig_api_compliance.Classes
 
           List<Artifact> checklists = WebClient.GetChecklistsBySystem(systemId).GetAwaiter().GetResult();
           if (checklists != null && checklists.Count > 0) {
-            controlSet = WebClient.GetControlRecords().GetAwaiter().GetResult();
+            controlSet = WebClient.GetControlRecords(filter).GetAwaiter().GetResult();
             foreach (Artifact a in checklists) {
               art = WebClient.GetChecklistAsync(a.InternalId.ToString()).GetAwaiter().GetResult();
               if (art != null) {
@@ -74,7 +74,7 @@ namespace openstig_api_compliance.Classes
                         //   else if (!string.IsNullOrEmpty(controlRecord.title))
                           compliance.title = controlRecord.title;
                         }
-                        else { // get the generic family name of the control if any
+                        else { // get the generic family name of the control if any if this is an allowed control
                           parentIndex = GetFirstIndex(ctrl.index);
                           if (parentIndex > 0) {
                             controlRecord = controlSet.Where(x => x.number == ctrl.index.Substring(0, parentIndex) || 

@@ -82,8 +82,7 @@ namespace openstig_api_compliance.Classes
             }
         }
 
-
-        public static async Task<List<ControlSet>> GetControlRecords()
+        public static async Task<List<ControlSet>> GetControlRecords(string filter)
         {
             // Create a New HttpClient object and dispose it when done, so the app doesn't leak resources
             using (HttpClient client = new HttpClient())
@@ -93,9 +92,11 @@ namespace openstig_api_compliance.Classes
                 {
                     client.DefaultRequestHeaders.Accept.Clear();
                     client.DefaultRequestHeaders.Add("Accept", "application/json");
-                    string hosturl = Environment.GetEnvironmentVariable("openrmf-api-controls-server");
-                    Console.WriteLine("URL: {0}", hosturl + "/");
-                    HttpResponseMessage response = await client.GetAsync(hosturl + "/");
+                    string hosturl = Environment.GetEnvironmentVariable("openrmf-api-controls-server") + "/";
+                    if (!string.IsNullOrEmpty(filter))
+                        hosturl += "?filter=" + filter.ToLower();
+                    Console.WriteLine("URL: {0}", hosturl);
+                    HttpResponseMessage response = await client.GetAsync(hosturl);
                     response.EnsureSuccessStatusCode();
                     string responseBody = await response.Content.ReadAsStringAsync();
                     var result = JsonConvert.DeserializeObject<List<ControlSet>>(responseBody);
