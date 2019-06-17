@@ -18,7 +18,7 @@ namespace openstig_api_compliance.Classes
 {
     public static class ComplianceGenerator 
     {
-      public static async Task<List<NISTCompliance>> GetSystemControls(string systemId, string filter)
+      public static async Task<List<NISTCompliance>> GetSystemControls(string systemId, string filter, bool pii)
       {
         // for each system
         //  for each checklist in the system
@@ -45,7 +45,7 @@ namespace openstig_api_compliance.Classes
 
           List<Artifact> checklists = WebClient.GetChecklistsBySystem(systemId).GetAwaiter().GetResult();
           if (checklists != null && checklists.Count > 0) {
-            controlSet = WebClient.GetControlRecords(filter).GetAwaiter().GetResult();
+            controlSet = WebClient.GetControlRecords(filter, pii).GetAwaiter().GetResult();
             foreach (Artifact a in checklists) {
               art = WebClient.GetChecklistAsync(a.InternalId.ToString()).GetAwaiter().GetResult();
               if (art != null) {

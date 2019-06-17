@@ -36,11 +36,11 @@ namespace openstig_api_compliance.Controllers
 
         // GET the compliance listing for a system
         [HttpGet("system/{id}")]
-        public async Task<IActionResult> GetCompliancBySystem(string id, string filter)
+        public async Task<IActionResult> GetCompliancBySystem(string id, string filter, bool pii)
         {
             if (!string.IsNullOrEmpty(id)) {
                 try {
-                    var result = ComplianceGenerator.GetSystemControls(id, filter);
+                    var result = ComplianceGenerator.GetSystemControls(id, filter, pii);
                     if (result != null && result.Result != null && result.Result.Count > 0)
                         return Ok(result);
                     else
