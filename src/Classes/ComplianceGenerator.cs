@@ -105,7 +105,8 @@ namespace openstig_api_compliance.Classes
                         rec.status = v.STATUS;
                         rec.updatedOn = a.updatedOn.Value;
                         rec.title = a.title;
-                        rec.type = a.type;
+                        rec.stigType = a.stigType;
+                        rec.stigRelease = a.stigRelease;
                         rec.hostName = host;
                         compliance.complianceRecords.Add(rec); // add the new compliance record to the control we are making
                       }
@@ -114,7 +115,7 @@ namespace openstig_api_compliance.Classes
                 }
               }
             }
-            // // fill the compliance list with those in the controls not yet in the complianceList
+            // // fill the compliance list with those in the controls not yet in the complianceList but in the valid control set
             List<string> missingIndexes = controls.Where(x => !complianceList.Any(x2 => x2.control == x.control)).Select(y => y.control).Distinct().ToList();
             foreach (string index in missingIndexes) {
               compliance = new NISTCompliance();

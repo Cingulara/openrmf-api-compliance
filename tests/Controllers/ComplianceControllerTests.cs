@@ -1,6 +1,11 @@
 using System;
 using Xunit;
 using openstig_api_compliance.Controllers;
+using openstig_api_compliance.Models.Compliance;
+using openstig_api_compliance.Classes;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+
 using Moq;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Mvc;
@@ -30,22 +35,5 @@ namespace tests.Controllers
         {
             Assert.True(_complianceController != null);
         }
-
-        [Fact]
-        public void Test_ComplianceControllerGetComlianceBySystemIsValid()
-        {
-            var result = _complianceController.GetCompliancBySystem("myid", "low", false);
-            Assert.True(_complianceController != null);
-            Assert.Equal(200, ((Microsoft.AspNetCore.Mvc.ObjectResult)result.Result).StatusCode); // returns a status code HTTP 200
-        }
-
-        [Fact]
-        public void Test_ComplianceControllerGetCCIListingByControlIsValid()
-        {
-            var result = _complianceController.GetCCIListingByControl("AC-1");
-            Assert.True(_complianceController != null);
-            Assert.Equal(200, ((Microsoft.AspNetCore.Mvc.ObjectResult)result.Result).StatusCode); // returns a status code HTTP 200
-        }
-
     }
 }
