@@ -23,7 +23,7 @@ namespace tests.Controllers
     {
         private readonly Mock<ILogger<ComplianceController>> _mockLogger;
         private readonly ComplianceController _complianceController; 
-        private readonly Mock<ComplianceController> _context;
+        //private readonly Mock<ComplianceController> _context;
 
         public ComplianceControllerTests() {
             _mockLogger = new Mock<ILogger<ComplianceController>>();
