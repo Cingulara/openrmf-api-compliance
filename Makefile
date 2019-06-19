@@ -22,8 +22,8 @@ latest:
 	docker logout
 
 clean:
-	@rm -f -r obj
-	@rm -f -r bin
+	@rm -f -r src/obj
+	@rm -f -r src/bin
 
 version:
 	@echo ${VERSION}
