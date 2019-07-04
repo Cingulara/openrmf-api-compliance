@@ -23,7 +23,7 @@ namespace openstig_api_compliance.Classes
                 {
                     client.DefaultRequestHeaders.Accept.Clear();
                     client.DefaultRequestHeaders.Add("Accept", "application/json");
-                    string hosturl = Environment.GetEnvironmentVariable("openstig-api-read-server");
+                    string hosturl = Environment.GetEnvironmentVariable("openrmf-api-read-server");
                     HttpResponseMessage response = await client.GetAsync(hosturl + "/systems/" + System.Uri.EscapeUriString(systemId));
                     response.EnsureSuccessStatusCode();
                     string responseBody = await response.Content.ReadAsStringAsync();
@@ -52,7 +52,7 @@ namespace openstig_api_compliance.Classes
                 {
                     client.DefaultRequestHeaders.Accept.Clear();
                     client.DefaultRequestHeaders.Add("Accept", "application/xml");
-                    string hosturl = Environment.GetEnvironmentVariable("openstig-api-read-server");
+                    string hosturl = Environment.GetEnvironmentVariable("openrmf-api-read-server");
                     Console.WriteLine("URL: {0}", hosturl + "/" + artifactId);
                     HttpResponseMessage response = await client.GetAsync(hosturl + "/" + artifactId);
                     response.EnsureSuccessStatusCode();
@@ -82,8 +82,7 @@ namespace openstig_api_compliance.Classes
             }
         }
 
-
-        public static async Task<List<ControlSet>> GetControlRecords()
+        public static async Task<List<ControlSet>> GetControlRecords(string filter, bool pii)
         {
             // Create a New HttpClient object and dispose it when done, so the app doesn't leak resources
             using (HttpClient client = new HttpClient())
@@ -93,9 +92,12 @@ namespace openstig_api_compliance.Classes
                 {
                     client.DefaultRequestHeaders.Accept.Clear();
                     client.DefaultRequestHeaders.Add("Accept", "application/json");
-                    string hosturl = Environment.GetEnvironmentVariable("openstig-api-controls-server");
-                    Console.WriteLine("URL: {0}", hosturl + "/");
-                    HttpResponseMessage response = await client.GetAsync(hosturl + "/");
+                    // always pass the PII
+                    string hosturl = Environment.GetEnvironmentVariable("openrmf-api-controls-server") + "/?pii=" + pii.ToString().ToLower();
+                    if (!string.IsNullOrEmpty(filter))
+                        hosturl += "&filter=" + filter.ToLower();
+                    Console.WriteLine("URL: {0}", hosturl);
+                    HttpResponseMessage response = await client.GetAsync(hosturl);
                     response.EnsureSuccessStatusCode();
                     string responseBody = await response.Content.ReadAsStringAsync();
                     var result = JsonConvert.DeserializeObject<List<ControlSet>>(responseBody);

@@ -7,7 +7,7 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/openstig-api-compliance.csproj"
+                "${workspaceFolder}/openrmf-api-compliance.csproj"
             ],
             "problemMatcher": "$msCompile"
         }

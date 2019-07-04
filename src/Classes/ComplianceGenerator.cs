@@ -18,7 +18,7 @@ namespace openstig_api_compliance.Classes
 {
     public static class ComplianceGenerator 
     {
-      public static async Task<List<NISTCompliance>> GetSystemControls(string systemId)
+      public static async Task<List<NISTCompliance>> GetSystemControls(string systemId, string filter, bool pii)
       {
         // for each system
         //  for each checklist in the system
@@ -45,7 +45,7 @@ namespace openstig_api_compliance.Classes
 
           List<Artifact> checklists = WebClient.GetChecklistsBySystem(systemId).GetAwaiter().GetResult();
           if (checklists != null && checklists.Count > 0) {
-            controlSet = WebClient.GetControlRecords().GetAwaiter().GetResult();
+            controlSet = WebClient.GetControlRecords(filter, pii).GetAwaiter().GetResult();
             foreach (Artifact a in checklists) {
               art = WebClient.GetChecklistAsync(a.InternalId.ToString()).GetAwaiter().GetResult();
               if (art != null) {
@@ -73,8 +73,10 @@ namespace openstig_api_compliance.Classes
                         //     compliance.title = controlRecord.subControlDescription;
                         //   else if (!string.IsNullOrEmpty(controlRecord.title))
                           compliance.title = controlRecord.title;
+                          compliance.sortString = GenerateControlIndexSort(ctrl.index);
+                          complianceList.Add(compliance); // add it to the listing
                         }
-                        else { // get the generic family name of the control if any
+                        else { // get the generic family name of the control if any if this is an allowed control
                           parentIndex = GetFirstIndex(ctrl.index);
                           if (parentIndex > 0) {
                             controlRecord = controlSet.Where(x => x.number == ctrl.index.Substring(0, parentIndex) || 
@@ -82,11 +84,15 @@ namespace openstig_api_compliance.Classes
                             if (controlRecord != null) {
                               if (!string.IsNullOrEmpty(controlRecord.title))
                                 compliance.title = controlRecord.title;
+                              compliance.sortString = GenerateControlIndexSort(ctrl.index);
+                              complianceList.Add(compliance); // add it to the listing
                             }
                           }
                         }
-                        compliance.sortString = GenerateControlIndexSort(ctrl.index);
-                        complianceList.Add(compliance); // add it to the listing
+                        // moved this above where there is a real title, otherwise this is a ghost control not used anymore 
+                        // also means it is not linked to Low / Moderate / High which is a required param calling this code
+                        //compliance.sortString = GenerateControlIndexSort(ctrl.index);
+                        //complianceList.Add(compliance); // add it to the listing
                       }
                       // For the compliance record, does it have a listing for the checklist/artifactId
                       if (compliance.complianceRecords.Where(c => c.artifactId == a.InternalId).Count() > 0) { // if a new record, will be 0
@@ -99,7 +105,8 @@ namespace openstig_api_compliance.Classes
                         rec.status = v.STATUS;
                         rec.updatedOn = a.updatedOn.Value;
                         rec.title = a.title;
-                        rec.type = a.type;
+                        rec.stigType = a.stigType;
+                        rec.stigRelease = a.stigRelease;
                         rec.hostName = host;
                         compliance.complianceRecords.Add(rec); // add the new compliance record to the control we are making
                       }
@@ -108,8 +115,7 @@ namespace openstig_api_compliance.Classes
                 }
               }
             }
-            // fill the compliance list with those in the controls not yet in the complianceList
-            //List<string> missingIndexes = controls.Where(x => !complianceList.Any(x2 => x2.index == x.index)).Select(y => y.index).Distinct().ToList();
+            // // fill the compliance list with those in the controls not yet in the complianceList but in the valid control set
             List<string> missingIndexes = controls.Where(x => !complianceList.Any(x2 => x2.control == x.control)).Select(y => y.control).Distinct().ToList();
             foreach (string index in missingIndexes) {
               compliance = new NISTCompliance();
@@ -118,10 +124,9 @@ namespace openstig_api_compliance.Classes
               //controlRecord = controlSet.Where(x => x.number == index.Replace(" ", "") || x.subControlNumber == index.Replace(" ", "")).FirstOrDefault();
               controlRecord = controlSet.Where(x => x.number == index.Replace(" ", "")).FirstOrDefault();
               if (controlRecord != null) {
-                // if (!string.IsNullOrEmpty(controlRecord.subControlDescription))
-                //   compliance.title = controlRecord.subControlDescription;
-                // else if (!string.IsNullOrEmpty(controlRecord.title))
-                  compliance.title = controlRecord.title;
+                compliance.title = controlRecord.title;
+                compliance.sortString = GenerateControlIndexSort(index);
+                complianceList.Add(compliance); // add it to the listing
               }
               else { // get the generic family name of the control if any
                 parentIndex = GetFirstIndex(index);
@@ -131,14 +136,17 @@ namespace openstig_api_compliance.Classes
                   if (controlRecord != null) {
                     if (!string.IsNullOrEmpty(controlRecord.title))
                       compliance.title = controlRecord.title;
+                      compliance.sortString = GenerateControlIndexSort(index);
+                      complianceList.Add(compliance); // add it to the listing
                   }
                 }
                 else {
                   Console.WriteLine(string.Format("control not found: {0}", index));
                 }
               }
-              compliance.sortString = GenerateControlIndexSort(index);
-              complianceList.Add(compliance); // add it to the listing
+              // moved this to above where we find a title, otherwise these are orphaned are not listed
+              //compliance.sortString = GenerateControlIndexSort(index);
+              //complianceList.Add(compliance); // add it to the listing
             }
             // order by the index, which also groups them by the major control
             return complianceList.OrderBy(x => x.sortString).ToList();
@@ -167,7 +175,7 @@ namespace openstig_api_compliance.Classes
               return period;
       }
       
-      // use the rules in https://github.com/Cingulara/openstig-api-compliance/issues/1: 
+      // use the rules in https://github.com/Cingulara/openrmf-api-compliance/issues/1: 
       //   if anything is open, mark it open
       //   else if the old one is not open or N/R
       //         anything is not reviewed, mark it not reviewed
