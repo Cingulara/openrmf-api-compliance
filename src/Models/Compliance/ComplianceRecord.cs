@@ -12,8 +12,8 @@ namespace openstig_api_compliance.Models.Compliance
         }
         public string artifactId { get; set; }
         public string title { get; set; }
-        public STIGtype type { get; set; }
-        public string typeTitle { get { return Enum.GetName(typeof(STIGtype), type);} }
+        public string stigType { get; set; }
+        public string stigRelease { get; set; }
         
         public string status { get; set; }
         public string hostName { get; set;}
