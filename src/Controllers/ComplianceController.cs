@@ -1,26 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using openstig_api_compliance.Classes;
-using openstig_api_compliance.Models;
-using System.IO;
-using System.Text;
-using Microsoft.AspNetCore;
-using Microsoft.AspNetCore.Hosting;
-using System.Xml.Serialization;
-using System.Xml;
-using Microsoft.AspNetCore.Cors.Infrastructure;
-using Newtonsoft.Json;
-using Microsoft.Extensions.Options;
-using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Authorization;
 
-using DocumentFormat.OpenXml;
-using DocumentFormat.OpenXml.Packaging;
-using DocumentFormat.OpenXml.Spreadsheet;
+// using DocumentFormat.OpenXml;
+// using DocumentFormat.OpenXml.Packaging;
+// using DocumentFormat.OpenXml.Spreadsheet;
 
 namespace openstig_api_compliance.Controllers
 {
@@ -36,6 +23,7 @@ namespace openstig_api_compliance.Controllers
 
         // GET the compliance listing for a system
         [HttpGet("system/{id}")]
+        [Authorize(Roles = "Administrator,Reader,Editor,Assessor")]
         public async Task<IActionResult> GetCompliancBySystem(string id, string filter, bool pii)
         {
             if (!string.IsNullOrEmpty(id)) {
@@ -57,6 +45,7 @@ namespace openstig_api_compliance.Controllers
 
         // GET the CCIs related to a NIST higher level control
         [HttpGet("cci/{control}")]
+        [Authorize(Roles = "Administrator,Reader,Editor,Assessor")]
         public async Task<IActionResult> GetCCIListingByControl(string control)
         {
             if (!string.IsNullOrEmpty(control)) {
