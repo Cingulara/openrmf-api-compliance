@@ -32,9 +32,9 @@
             "env": {
                 "ASPNETCORE_ENVIRONMENT": "Development",
                 "ASPNETCORE_URLS": "http://*:8092",
-                "openrmf-api-read-server" : "http://localhost:8084",
+                "natsserverurl" : "nats://127.0.0.1:4222",
                 "openrmf-api-controls-server": "http://localhost:8094",
-                "JWT-AUTHORITY" : "http://192.168.0.14:9001/auth/realms/openrmf",
+                "JWT-AUTHORITY" : "http://192.168.11.39:9001/auth/realms/openrmf",
                 "JWT-CLIENT": "openrmf"
             }
         },

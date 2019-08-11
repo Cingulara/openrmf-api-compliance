@@ -43,11 +43,13 @@ namespace openstig_api_compliance.Classes
           string host = "";
           int parentIndex = 0;
 
-          List<Artifact> checklists = WebClient.GetChecklistsBySystem(systemId).GetAwaiter().GetResult();
+          //List<Artifact> checklists = WebClient.GetChecklistsBySystem(systemId).GetAwaiter().GetResult();
+          List<Artifact> checklists = NATSClient.GetChecklistsBySystem(systemId);
           if (checklists != null && checklists.Count > 0) {
             controlSet = WebClient.GetControlRecords(filter, pii).GetAwaiter().GetResult();
             foreach (Artifact a in checklists) {
-              art = WebClient.GetChecklistAsync(a.InternalId.ToString()).GetAwaiter().GetResult();
+              //art = WebClient.GetChecklistAsync(a.InternalId.ToString()).GetAwaiter().GetResult();
+              art = NATSClient.GetChecklist(a.InternalId.ToString());
               if (art != null) {
                 host = !string.IsNullOrEmpty(art.CHECKLIST.ASSET.HOST_NAME)? art.CHECKLIST.ASSET.HOST_NAME : "";
                 foreach (VULN v in art.CHECKLIST.STIGS.iSTIG.VULN){
