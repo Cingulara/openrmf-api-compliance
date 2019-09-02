@@ -43,12 +43,12 @@ namespace openstig_api_compliance.Classes
           string host = "";
           int parentIndex = 0;
 
-          //List<Artifact> checklists = WebClient.GetChecklistsBySystem(systemId).GetAwaiter().GetResult();
+          // this routine uses "API to API" messaging via NATS to get the list of checklists per system, each checklist, 
+          // as well as the controls that we need to run against for generating compliance
           List<Artifact> checklists = NATSClient.GetChecklistsBySystem(systemId);
           if (checklists != null && checklists.Count > 0) {
-            controlSet = WebClient.GetControlRecords(filter, pii).GetAwaiter().GetResult();
+            controlSet = NATSClient.GetControlRecords(filter, pii);
             foreach (Artifact a in checklists) {
-              //art = WebClient.GetChecklistAsync(a.InternalId.ToString()).GetAwaiter().GetResult();
               art = NATSClient.GetChecklist(a.InternalId.ToString());
               if (art != null) {
                 host = !string.IsNullOrEmpty(art.CHECKLIST.ASSET.HOST_NAME)? art.CHECKLIST.ASSET.HOST_NAME : "";
@@ -65,15 +65,10 @@ namespace openstig_api_compliance.Classes
                       }
                       else {
                         compliance = new NISTCompliance();
-                        //compliance.index = ctrl.index; // add the control index
                         compliance.control = ctrl.control; // major control family
                         compliance.title = "Unknown";
-                        //controlRecord = controlSet.Where(x => x.number == ctrl.index.Replace(" ", "") || x.subControlNumber == ctrl.index.Replace(" ", "")).FirstOrDefault();
                         controlRecord = controlSet.Where(x => x.number == ctrl.control.Replace(" ", "")).FirstOrDefault();
                         if (controlRecord != null) {
-                        //   if (!string.IsNullOrEmpty(controlRecord.subControlDescription))
-                        //     compliance.title = controlRecord.subControlDescription;
-                        //   else if (!string.IsNullOrEmpty(controlRecord.title))
                           compliance.title = controlRecord.title;
                           compliance.sortString = GenerateControlIndexSort(ctrl.index);
                           complianceList.Add(compliance); // add it to the listing
