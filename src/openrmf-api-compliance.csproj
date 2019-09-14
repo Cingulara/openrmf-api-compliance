@@ -34,7 +34,6 @@
 
   <ItemGroup>
     <Content Update="nlog.config" CopyToOutputDirectory="PreserveNewest" />
-    <Content Include="U_CCI_List.xml" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
   
 </Project>

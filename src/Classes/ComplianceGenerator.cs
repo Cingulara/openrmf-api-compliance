@@ -26,8 +26,8 @@ namespace openstig_api_compliance.Classes
         //      for each CCI within the VULN listed
         //        match up the CCI to the NIST, then get the status, checklist and ID, STIG ID , VULN ID, and type and return it
         try {
-          // load the current XML document to get all CCI to NIST Major Controls
-          List<CciItem> cciItems = NistCciGenerator.LoadNistToCci();
+          // Call the NATS subscription to get all CCI to NIST Major Controls
+          List<CciItem> cciItems = NATSClient.GetCCIListing();
           // list of the NIST controls down to the index-to-CCI level we cycle through
           List<NISTControl> controls = CreateListOfNISTControls(cciItems);
           // the end result grouped by control and listing checklists and their status

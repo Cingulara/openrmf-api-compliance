@@ -4,6 +4,7 @@ using System.Text;
 using NATS.Client;
 using openstig_api_compliance.Models.Artifact;
 using openstig_api_compliance.Models.Compliance;
+using openstig_api_compliance.Models.NISTtoCCI;
 using Newtonsoft.Json;
 
 namespace openstig_api_compliance.Classes
@@ -87,6 +88,29 @@ namespace openstig_api_compliance.Classes
             }
             c.Close();
             return controls;
+        }
+
+        /// <summary>
+        /// Return a list of CCI Items to use for generating compliance
+        /// </summary>
+        /// <returns></returns>
+        public static List<CciItem> GetCCIListing(){
+            // get the result ready to receive the info and send on
+            List<CciItem> cciItems = new List<CciItem>();
+            // Create a new connection factory to create a connection.
+            ConnectionFactory cf = new ConnectionFactory();
+            // Creates a live connection to the default NATS Server running locally
+            IConnection c = cf.CreateConnection(Environment.GetEnvironmentVariable("natsserverurl"));
+            // send the message with the subject, no data needed
+            Msg reply = c.Request("openrmf.compliance.cci", Encoding.UTF8.GetBytes(JsonConvert.SerializeObject("")), 30000);
+            // save the reply and get back the checklist to score
+            if (reply != null) {
+                cciItems = JsonConvert.DeserializeObject<List<CciItem>>(Compression.DecompressString(Encoding.UTF8.GetString(reply.Data)));
+                c.Close();
+                return cciItems;
+            }
+            c.Close();
+            return cciItems;
         }
     }
 }
