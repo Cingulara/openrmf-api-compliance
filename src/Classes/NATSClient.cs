@@ -23,7 +23,7 @@ namespace openstig_api_compliance.Classes
             ConnectionFactory cf = new ConnectionFactory();
 
             // Creates a live connection to the default NATS Server running locally
-            IConnection c = cf.CreateConnection(Environment.GetEnvironmentVariable("natsserverurl"));
+            IConnection c = cf.CreateConnection(Environment.GetEnvironmentVariable("NATSSERVERURL"));
 
             // publish to get this list of Artifact checklists back via system
             Msg reply = c.Request("openrmf.system.checklists.read", Encoding.UTF8.GetBytes(system), 30000); 
@@ -49,7 +49,7 @@ namespace openstig_api_compliance.Classes
             ConnectionFactory cf = new ConnectionFactory();
 
             // Creates a live connection to the default NATS Server running locally
-            IConnection c = cf.CreateConnection(Environment.GetEnvironmentVariable("natsserverurl"));
+            IConnection c = cf.CreateConnection(Environment.GetEnvironmentVariable("NATSSERVERURL"));
             // publish to get this Artifact checklist back via ID
             Msg reply = c.Request("openrmf.checklist.read", Encoding.UTF8.GetBytes(id), 3000);
             // save the reply and get back the checklist to score
@@ -77,7 +77,7 @@ namespace openstig_api_compliance.Classes
             // Create a new connection factory to create a connection.
             ConnectionFactory cf = new ConnectionFactory();
             // Creates a live connection to the default NATS Server running locally
-            IConnection c = cf.CreateConnection(Environment.GetEnvironmentVariable("natsserverurl"));
+            IConnection c = cf.CreateConnection(Environment.GetEnvironmentVariable("NATSSERVERURL"));
             // send the message with data of the filter serialized
             Msg reply = c.Request("openrmf.controls", Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(controlFilter)), 30000);
             // save the reply and get back the checklist to score
@@ -100,7 +100,7 @@ namespace openstig_api_compliance.Classes
             // Create a new connection factory to create a connection.
             ConnectionFactory cf = new ConnectionFactory();
             // Creates a live connection to the default NATS Server running locally
-            IConnection c = cf.CreateConnection(Environment.GetEnvironmentVariable("natsserverurl"));
+            IConnection c = cf.CreateConnection(Environment.GetEnvironmentVariable("NATSSERVERURL"));
             // send the message with the subject, no data needed
             Msg reply = c.Request("openrmf.compliance.cci", Encoding.UTF8.GetBytes(JsonConvert.SerializeObject("")), 30000);
             // save the reply and get back the checklist to score
