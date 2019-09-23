@@ -1,4 +1,4 @@
-VERSION ?= 0.7
+VERSION ?= 0.8
 NAME ?= "openrmf-api-compliance"
 AUTHOR ?= "Dale Bingham"
 PORT_EXT ?= 8092
@@ -9,17 +9,15 @@ DOCKERHUB_ACCOUNT ?= cingulara
 .PHONY: build docker latest clean version dockerhub
 
 build:  
-	dotnet build
+	dotnet build src
 
 docker: 
 	docker build -f Dockerfile -t $(NAME)\:$(VERSION) --no-cache=$(NO_CACHE) .
 
 latest: 
 	docker build -f Dockerfile -t $(NAME)\:latest --no-cache=$(NO_CACHE) .
-	docker login -u ${DOCKERHUB_ACCOUNT}
 	docker tag $(NAME)\:latest ${DOCKERHUB_ACCOUNT}\/$(NAME)\:latest
 	docker push ${DOCKERHUB_ACCOUNT}\/$(NAME)\:latest
-	docker logout
 
 clean:
 	@rm -f -r src/obj
@@ -29,9 +27,7 @@ version:
 	@echo ${VERSION}
 
 dockerhub:
-	docker login -u ${DOCKERHUB_ACCOUNT}
 	docker tag $(NAME)\:$(VERSION) ${DOCKERHUB_ACCOUNT}\/$(NAME)\:$(VERSION)
 	docker push ${DOCKERHUB_ACCOUNT}\/$(NAME)\:$(VERSION)
-	docker logout
 
 DEFAULT: build
