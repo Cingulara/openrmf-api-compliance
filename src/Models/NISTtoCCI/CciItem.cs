@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace openstig_api_compliance.Models.NISTtoCCI
+namespace openrmf_api_compliance.Models.NISTtoCCI
 {
     [Serializable]
     public class CciItem

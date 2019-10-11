@@ -1,7 +1,6 @@
 using System;
-using System.Collections.Generic;
 
-namespace openstig_api_compliance.Models.Artifact
+namespace openrmf_api_compliance.Models.Artifact
 {
     [Serializable]
     public class Artifact

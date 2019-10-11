@@ -1,14 +1,9 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using openstig_api_compliance.Models.Artifact;
-using System.IO;
-using System.Text;
+using openrmf_api_compliance.Models.Artifact;
 using System.Xml.Serialization;
 using System.Xml;
 
-namespace openstig_api_compliance.Classes
+namespace openrmf_api_compliance.Classes
 {
     public static class ChecklistLoader
     {        

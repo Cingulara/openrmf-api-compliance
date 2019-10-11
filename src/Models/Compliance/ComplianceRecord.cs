@@ -1,8 +1,6 @@
 using System;
-using System.Collections.Generic;
-using openstig_api_compliance.Models.Artifact;
 
-namespace openstig_api_compliance.Models.Compliance
+namespace openrmf_api_compliance.Models.Compliance
 {
     [Serializable]
     public class ComplianceRecord

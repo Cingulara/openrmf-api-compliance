@@ -1,5 +1,5 @@
 using Xunit;
-using openstig_api_compliance.Models.Artifact;
+using openrmf_api_compliance.Models.Artifact;
 using System;
 
 namespace tests.Models
