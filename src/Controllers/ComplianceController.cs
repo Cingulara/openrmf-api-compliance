@@ -5,10 +5,6 @@ using openrmf_api_compliance.Classes;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Authorization;
 
-// using DocumentFormat.OpenXml;
-// using DocumentFormat.OpenXml.Packaging;
-// using DocumentFormat.OpenXml.Spreadsheet;
-
 namespace openrmf_api_compliance.Controllers
 {
     [Route("/")]
