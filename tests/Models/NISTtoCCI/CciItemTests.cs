@@ -1,5 +1,5 @@
 using Xunit;
-using openstig_api_compliance.Models.NISTtoCCI;
+using openrmf_api_compliance.Models.NISTtoCCI;
 
 namespace tests.Models
 {

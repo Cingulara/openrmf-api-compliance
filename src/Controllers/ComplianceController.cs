@@ -1,15 +1,11 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using openstig_api_compliance.Classes;
+using openrmf_api_compliance.Classes;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Authorization;
 
-// using DocumentFormat.OpenXml;
-// using DocumentFormat.OpenXml.Packaging;
-// using DocumentFormat.OpenXml.Spreadsheet;
-
-namespace openstig_api_compliance.Controllers
+namespace openrmf_api_compliance.Controllers
 {
     [Route("/")]
     public class ComplianceController : Controller

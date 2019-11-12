@@ -1,7 +1,6 @@
 using System;
 
-
-namespace openstig_api_compliance.Models.Compliance
+namespace openrmf_api_compliance.Models.Compliance
 {
   public class ControlSet {
 
