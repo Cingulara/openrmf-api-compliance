@@ -1,20 +1,11 @@
-using System;
 using Xunit;
-using openstig_api_compliance.Controllers;
-using openstig_api_compliance.Models.Compliance;
-using openstig_api_compliance.Classes;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using openrmf_api_compliance.Controllers;
+using openrmf_api_compliance.Models.Compliance;
+using openrmf_api_compliance.Classes;
+
 
 using Moq;
 using Microsoft.Extensions.Logging;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Cors.Infrastructure;
-using Microsoft.Extensions.Options;
-using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
 
 namespace tests.Controllers
 {

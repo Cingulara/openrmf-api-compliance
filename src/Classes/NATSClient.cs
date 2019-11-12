@@ -2,12 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using NATS.Client;
-using openstig_api_compliance.Models.Artifact;
-using openstig_api_compliance.Models.Compliance;
-using openstig_api_compliance.Models.NISTtoCCI;
+using openrmf_api_compliance.Models.Artifact;
+using openrmf_api_compliance.Models.Compliance;
+using openrmf_api_compliance.Models.NISTtoCCI;
 using Newtonsoft.Json;
 
-namespace openstig_api_compliance.Classes
+namespace openrmf_api_compliance.Classes
 {
     public static class NATSClient
     {        

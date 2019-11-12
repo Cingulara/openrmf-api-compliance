@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace openstig_api_compliance.Models.Compliance
+namespace openrmf_api_compliance.Models.Compliance
 {
     [Serializable]
     public class NISTCompliance

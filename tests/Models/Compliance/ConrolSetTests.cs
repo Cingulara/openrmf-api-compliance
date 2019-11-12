@@ -1,5 +1,5 @@
 using Xunit;
-using openstig_api_compliance.Models.Compliance;
+using openrmf_api_compliance.Models.Compliance;
 using System;
 
 namespace tests.Models
