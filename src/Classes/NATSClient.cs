@@ -64,6 +64,9 @@ namespace openrmf_api_compliance.Classes
                 c.Close();
                 return arts;
             }
+            // publish that we just ran a compliance update
+            c.Publish("openrmf.system.compliance", Encoding.UTF8.GetBytes(system));
+            c.Flush();
             c.Close();
             return arts;
         }
