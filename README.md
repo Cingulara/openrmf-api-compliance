@@ -11,6 +11,9 @@ low/moderate/high classification.
 * GET to /swagger/ gives you the API structure.
 * GET to cci/{control} to return the CCIs related to a NIST higher level control
 
+# Message Calls
+* openrmf.system.compliance with payload of the system group ID. The System MSG client reads this and updates the system record.
+
 # Additional Information
 More documentation is at https://github.com/Cingulara/openrmf-docs/.
 
