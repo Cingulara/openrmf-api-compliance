@@ -26,6 +26,7 @@ namespace openrmf_api_compliance.Classes
             Options opts = ConnectionFactory.GetDefaultOptions();
             opts.MaxReconnect = -1;
             opts.ReconnectWait = 1000;
+            opts.Name = "openrmf-api-compliance";
             opts.Url = Environment.GetEnvironmentVariable("NATSSERVERURL");
             opts.AsyncErrorEventHandler += (sender, events) =>
             {
@@ -85,6 +86,7 @@ namespace openrmf_api_compliance.Classes
             Options opts = ConnectionFactory.GetDefaultOptions();
             opts.MaxReconnect = -1;
             opts.ReconnectWait = 1000;
+            opts.Name = "openrmf-api-compliance";
             opts.Url = Environment.GetEnvironmentVariable("NATSSERVERURL");
             opts.AsyncErrorEventHandler += (sender, events) =>
             {
@@ -145,6 +147,7 @@ namespace openrmf_api_compliance.Classes
             Options opts = ConnectionFactory.GetDefaultOptions();
             opts.MaxReconnect = -1;
             opts.ReconnectWait = 1000;
+            opts.Name = "openrmf-api-compliance";
             opts.Url = Environment.GetEnvironmentVariable("NATSSERVERURL");
             opts.AsyncErrorEventHandler += (sender, events) =>
             {
@@ -200,6 +203,7 @@ namespace openrmf_api_compliance.Classes
             Options opts = ConnectionFactory.GetDefaultOptions();
             opts.MaxReconnect = -1;
             opts.ReconnectWait = 1000;
+            opts.Name = "openrmf-api-compliance";
             opts.Url = Environment.GetEnvironmentVariable("NATSSERVERURL");
             opts.AsyncErrorEventHandler += (sender, events) =>
             {

@@ -25,13 +25,6 @@ namespace openrmf_api_compliance
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            // Register the database components
-            services.Configure<Settings>(options =>
-            {
-                options.ConnectionString = Environment.GetEnvironmentVariable("mongoConnection");
-                options.Database = Environment.GetEnvironmentVariable("mongodb");
-            });
-            
             // Register the Swagger generator, defining one or more Swagger documents
             services.AddSwaggerGen(c =>
             {
