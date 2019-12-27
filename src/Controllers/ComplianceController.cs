@@ -42,19 +42,26 @@ namespace openrmf_api_compliance.Controllers
         {
             if (!string.IsNullOrEmpty(id)) {
                 try {
+                    _logger.LogInformation("Calling GetCompliancBySystem({0}, {1}, {2})", id, filter, pii.ToString());
                     var result = ComplianceGenerator.GetSystemControls(id, filter, pii);
-                    if (result != null && result.Result != null && result.Result.Count > 0)
+                    if (result != null && result.Result != null && result.Result.Count > 0) {
+                        _logger.LogInformation("Called GetCompliancBySystem({0}, {1}, {2}) successfully", id, filter, pii.ToString());
                         return Ok(result);
-                    else
+                    }
+                    else {
+                        _logger.LogWarning("Called GetCompliancBySystem({0}, {1}, {2}) but had no returned data", id, filter, pii.ToString());
                         return NotFound(); // bad system reference
+                    }
                 }
                 catch (Exception ex) {
-                    _logger.LogError(ex, "Error listing all checklists for system {0}", id);
+                    _logger.LogError(ex, "GetCompliancBySystem() Error listing all checklists for system {0}", id);
                     return BadRequest();
                 }
             }
-            else
+            else {
+                _logger.LogWarning("Called GetCompliancBySystem() butwith an invalid or empty Id", id);
                 return BadRequest(); // no term entered
+            }
         }
     }
 }
