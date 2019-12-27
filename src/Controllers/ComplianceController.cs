@@ -20,7 +20,22 @@ namespace openrmf_api_compliance.Controllers
             _logger = logger;
         }
 
-        // GET the compliance listing for a system
+        /// <summary>
+        /// GET The compliance of a system based on the system ID passed in, if it has PII, 
+        /// and whatever filter we have such as the impact level.!-- 
+        /// </summary>
+        /// <param name="id">The ID of the system to generate compliance</param>
+        /// <param name="filter">The filter to show impact level of Low, Moderate, High</param>
+        /// <param name="pii">A boolean to say if this has PII or not.  There are 
+        ///        specific things to check compliance if this has PII.
+        /// </param>
+        /// <returns>
+        /// HTTP Status showing it was generated as well as the list of compliance records and status. 
+        /// Also shows the status of each checklist per major control.
+        /// </returns>
+        /// <response code="200">Returns the generated compliance listing</response>
+        /// <response code="400">If the item did not generate it correctly</response>
+        /// <response code="404">If the ID passed in is not valid</response>
         [HttpGet("system/{id}")]
         [Authorize(Roles = "Administrator,Reader,Editor,Assessor")]
         public async Task<IActionResult> GetCompliancBySystem(string id, string filter, bool pii)
