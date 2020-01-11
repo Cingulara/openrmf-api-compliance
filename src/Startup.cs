@@ -7,11 +7,16 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
 using Swashbuckle.AspNetCore.Swagger;
 using Prometheus;
+using OpenTracing;
+using OpenTracing.Util;
+using Jaeger;
+using Jaeger.Samplers;
 
 namespace openrmf_api_compliance
 {
@@ -26,7 +31,27 @@ namespace openrmf_api_compliance
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
-        {
+        {            
+            // Use "OpenTracing.Contrib.NetCore" to automatically generate spans for ASP.NET Core
+            services.AddSingleton<ITracer>(serviceProvider =>  
+            {  
+                string serviceName = System.Reflection.Assembly.GetEntryAssembly().GetName().Name;  
+            
+                ILoggerFactory loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();  
+            
+                ISampler sampler = new ConstSampler(sample: true);  
+            
+                ITracer tracer = new Tracer.Builder(serviceName)  
+                    .WithLoggerFactory(loggerFactory)  
+                    .WithSampler(sampler)  
+                    .Build();  
+            
+                GlobalTracer.Register(tracer);  
+            
+                return tracer;  
+            });
+            services.AddOpenTracing();
+
             // Register the Swagger generator, defining one or more Swagger documents
             services.AddSwaggerGen(c =>
             {
@@ -104,7 +129,7 @@ namespace openrmf_api_compliance
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             // Custom Metrics to count requests for each endpoint and the method
-            var counter = Metrics.CreateCounter("openrmf_path_counter", "Counts requests to OpenRMF endpoints", new CounterConfiguration
+            var counter = Metrics.CreateCounter("openrmf_compliance_api_path_counter", "Counts requests to OpenRMF endpoints", new CounterConfiguration
             {
                 LabelNames = new[] { "method", "endpoint" }
             });
