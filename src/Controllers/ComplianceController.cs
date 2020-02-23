@@ -28,6 +28,7 @@ namespace openrmf_api_compliance.Controllers
         /// <param name="filter">The filter to show impact level of Low, Moderate, High</param>
         /// <param name="pii">A boolean to say if this has PII or not.  There are 
         ///        specific things to check compliance if this has PII.
+        /// <param name="majorcontrol">The filter to show only show compliance with the major control passed in</param>
         /// </param>
         /// <returns>
         /// HTTP Status showing it was generated as well as the list of compliance records and status. 
@@ -38,12 +39,12 @@ namespace openrmf_api_compliance.Controllers
         /// <response code="404">If the ID passed in is not valid</response>
         [HttpGet("system/{id}")]
         [Authorize(Roles = "Administrator,Reader,Editor,Assessor")]
-        public async Task<IActionResult> GetCompliancBySystem(string id, string filter, bool pii)
+        public async Task<IActionResult> GetCompliancBySystem(string id, string filter, bool pii, string majorcontrol = "")
         {
             if (!string.IsNullOrEmpty(id)) {
                 try {
                     _logger.LogInformation("Calling GetCompliancBySystem({0}, {1}, {2})", id, filter, pii.ToString());
-                    var result = ComplianceGenerator.GetSystemControls(id, filter, pii);
+                    var result = ComplianceGenerator.GetSystemControls(id, filter, pii, majorcontrol);
                     if (result != null && result.Result != null && result.Result.Count > 0) {
                         _logger.LogInformation("Called GetCompliancBySystem({0}, {1}, {2}) successfully", id, filter, pii.ToString());
                         return Ok(result);

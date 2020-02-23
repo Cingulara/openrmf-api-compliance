@@ -1,4 +1,4 @@
-VERSION ?= 0.12
+VERSION ?= 0.12.1
 NAME ?= "openrmf-api-compliance"
 AUTHOR ?= "Dale Bingham"
 PORT_EXT ?= 8092
