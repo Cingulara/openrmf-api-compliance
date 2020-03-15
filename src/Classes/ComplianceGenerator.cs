@@ -13,7 +13,7 @@ namespace openrmf_api_compliance.Classes
 {
     public static class ComplianceGenerator 
     {
-      public static async Task<List<NISTCompliance>> GetSystemControls(string systemId, string filter, bool pii)
+      public static async Task<List<NISTCompliance>> GetSystemControls(string systemId, string filter, bool pii, string majorcontrol)
       {
         // for each system
         //  for each checklist in the system
@@ -27,6 +27,18 @@ namespace openrmf_api_compliance.Classes
           List<NISTControl> controls = CreateListOfNISTControls(cciItems);
           // the end result grouped by control and listing checklists and their status
           List<NISTCompliance> complianceList = new List<NISTCompliance>();
+          if (!string.IsNullOrEmpty(majorcontrol)) {
+            // filter the list to just do the one major control
+            controls = controls.Where(x => x.control == majorcontrol).ToList();
+            // get all cciItems where at least one of the major controls exists in the references listing
+            List<CciItem> filteredCCIItems = new List<CciItem>();
+            foreach (CciItem cci in cciItems) { // see if the major control is in here; if so keep it otherwise discard
+              if (cci.references != null && cci.references.Count > 0 && cci.references.Where(x => x.majorControl == majorcontrol).FirstOrDefault() != null)
+                filteredCCIItems.Add(cci);
+            }
+            cciItems = filteredCCIItems;
+            filteredCCIItems = null;
+          }
 
           // get all the variables ready
           List<STIG_DATA> sd;
