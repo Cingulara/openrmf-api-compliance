@@ -120,7 +120,7 @@ namespace openrmf_api_compliance.Classes
             IConnection c = cf.CreateConnection(opts);
 
             // publish to get this Artifact checklist back via ID
-            Msg reply = c.Request("openrmf.checklist.read", Encoding.UTF8.GetBytes(id), 3000);
+            Msg reply = c.Request("openrmf.checklist.read", Encoding.UTF8.GetBytes(id), 30000);
             // save the reply and get back the checklist to score
             if (reply != null) {
                 art = JsonConvert.DeserializeObject<Artifact>(Compression.DecompressString(Encoding.UTF8.GetString(reply.Data)));
