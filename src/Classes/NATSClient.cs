@@ -19,6 +19,64 @@ namespace openrmf_api_compliance.Classes
         /// </summary>
         /// <param name="system">The system ID for all the checklists to return.</param>
         /// <returns></returns>
+        public static SystemGroup GetSystemGroup(string system)
+        {
+            SystemGroup sg = new SystemGroup();
+            
+            // Create a new connection factory to create a connection.
+            ConnectionFactory cf = new ConnectionFactory();
+            // add the options for the server, reconnecting, and the handler events
+            Options opts = ConnectionFactory.GetDefaultOptions();
+            opts.MaxReconnect = -1;
+            opts.ReconnectWait = 1000;
+            opts.Name = "openrmf-api-compliance";
+            opts.Url = Environment.GetEnvironmentVariable("NATSSERVERURL");
+            opts.AsyncErrorEventHandler += (sender, events) =>
+            {
+                Console.WriteLine(string.Format("NATS client error. Server: {0}. Message: {1}. Subject: {2}", events.Conn.ConnectedUrl, events.Error, events.Subscription.Subject));
+            };
+
+            opts.ServerDiscoveredEventHandler += (sender, events) =>
+            {
+                Console.WriteLine(string.Format("A new server has joined the cluster: {0}", events.Conn.DiscoveredServers));
+            };
+
+            opts.ClosedEventHandler += (sender, events) =>
+            {
+                Console.WriteLine(string.Format("Connection Closed: {0}", events.Conn.ConnectedUrl));
+            };
+
+            opts.ReconnectedEventHandler += (sender, events) =>
+            {
+                Console.WriteLine(string.Format("Connection Reconnected: {0}", events.Conn.ConnectedUrl));
+            };
+
+            opts.DisconnectedEventHandler += (sender, events) =>
+            {
+                Console.WriteLine(string.Format("Connection Disconnected: {0}", events.Conn.ConnectedUrl));
+            };
+            
+            // Creates a live connection to the NATS Server with the above options
+            IConnection c = cf.CreateConnection(opts);
+
+            // publish to get this list of Artifact checklists back via system
+            Msg reply = c.Request("openrmf.system", Encoding.UTF8.GetBytes(system), 30000); 
+            c.Flush();
+            // save the reply and get back the system group record
+            if (reply != null) {
+                sg = JsonConvert.DeserializeObject<SystemGroup>(Compression.DecompressString(Encoding.UTF8.GetString(reply.Data)));
+                c.Close();
+                return sg;
+            }
+            c.Close();
+            return sg;
+        }
+
+        /// <summary>
+        /// Return a list of checklists based on the system.
+        /// </summary>
+        /// <param name="system">The system ID for all the checklists to return.</param>
+        /// <returns></returns>
         public static List<Artifact> GetChecklistsBySystem(string system)
         {
             List<Artifact> arts = new List<Artifact>();

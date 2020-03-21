@@ -65,12 +65,12 @@ namespace openrmf_api_compliance.Models
 
             Fills fills1 = new Fills() { Count = (UInt32Value)2U };
 
-            // no BG color just normal Excel
+            // 0 no BG color just normal Excel
             Fill fill1 = new Fill();
             PatternFill patternFill1 = new PatternFill() { PatternType = PatternValues.None };
             fill1.Append(patternFill1);
 
-            // red or open
+            // 1 red or open CAT 1
             Fill fill2 = new Fill();
             PatternFill patternFill2 = new PatternFill() { PatternType = PatternValues.Solid};
             ForegroundColor foregroundColor2 = new ForegroundColor() { Rgb = "FFFF0000" };
@@ -79,16 +79,16 @@ namespace openrmf_api_compliance.Models
             patternFill2.Append(backgroundColor2);
             fill2.Append(patternFill2);
 
-            // blue or N/A
+            // 2 silver or N/A
             Fill fill3 = new Fill();
             PatternFill patternFill3 = new PatternFill() { PatternType = PatternValues.Solid};
-            ForegroundColor foregroundColor3 = new ForegroundColor() { Rgb = "FF039BE5" };
+            ForegroundColor foregroundColor3 = new ForegroundColor() { Rgb = "FFCCCCCC" };
             BackgroundColor backgroundColor3 = new BackgroundColor() { Indexed = (UInt32Value)64U };
             patternFill3.Append(foregroundColor3);
             patternFill3.Append(backgroundColor3);
             fill3.Append(patternFill3);
 
-            // green or NaF
+            // 3 green or NaF
             Fill fill4 = new Fill();
             PatternFill patternFill4 = new PatternFill() { PatternType = PatternValues.Solid};
             ForegroundColor foregroundColor4 = new ForegroundColor() { Rgb = "FF50CC83" };
@@ -97,16 +97,16 @@ namespace openrmf_api_compliance.Models
             patternFill4.Append(backgroundColor4);
             fill4.Append(patternFill4);
 
-            // silver or Not Reviewed
+            // 4 black&white or Not Reviewed
             Fill fill5 = new Fill();
             PatternFill patternFill5 = new PatternFill() { PatternType = PatternValues.Solid};
-            ForegroundColor foregroundColor5 = new ForegroundColor() { Rgb = "FFCCCCCC" };
+            ForegroundColor foregroundColor5 = new ForegroundColor() { Rgb = "FFFFFFFF" };
             BackgroundColor backgroundColor5 = new BackgroundColor() { Indexed = (UInt32Value)64U };
             patternFill5.Append(foregroundColor5);
             patternFill5.Append(backgroundColor5);
             fill5.Append(patternFill5);
 
-            // red or open
+            // 5 red or open CAT 1
             Fill fill6 = new Fill();
             PatternFill patternFill6 = new PatternFill() { PatternType = PatternValues.Solid};
             ForegroundColor foregroundColor6 = new ForegroundColor() { Rgb = "FFE53935" };
@@ -115,12 +115,42 @@ namespace openrmf_api_compliance.Models
             patternFill6.Append(backgroundColor6);
             fill6.Append(patternFill6);
 
-            fills1.Append(fill1);
+            // 6 orange open CAT 2
+            Fill fill7 = new Fill();
+            PatternFill patternFill7 = new PatternFill() { PatternType = PatternValues.Solid};
+            ForegroundColor foregroundColor7 = new ForegroundColor() { Rgb = "FFFFA500" };
+            BackgroundColor backgroundColor7 = new BackgroundColor() { Indexed = (UInt32Value)64U };
+            patternFill7.Append(foregroundColor7);
+            patternFill7.Append(backgroundColor7);
+            fill7.Append(patternFill7);
+
+            // 7 orange open CAT 3
+            Fill fill8 = new Fill();
+            PatternFill patternFill8 = new PatternFill() { PatternType = PatternValues.Solid};
+            ForegroundColor foregroundColor8 = new ForegroundColor() { Rgb = "FFD8D80E" };
+            BackgroundColor backgroundColor8 = new BackgroundColor() { Indexed = (UInt32Value)64U };
+            patternFill8.Append(foregroundColor8);
+            patternFill8.Append(backgroundColor8);
+            fill8.Append(patternFill8);
+
+            // 8 gray background for any general use
+            Fill fill9 = new Fill();
+            PatternFill patternFill9 = new PatternFill() { PatternType = PatternValues.Solid};
+            ForegroundColor foregroundColor9 = new ForegroundColor() { Rgb = "FFBBBBBB" };
+            BackgroundColor backgroundColor9 = new BackgroundColor() { Indexed = (UInt32Value)64U };
+            patternFill9.Append(foregroundColor9);
+            patternFill9.Append(backgroundColor9);
+            fill9.Append(patternFill9);
+
+            fills1.Append(fill1); // these are 0 based when you include in the CellFormat statements below, so 1 off
             fills1.Append(fill2);
             fills1.Append(fill3);
             fills1.Append(fill4);
             fills1.Append(fill5);
             fills1.Append(fill6);
+            fills1.Append(fill7);
+            fills1.Append(fill8);
+            fills1.Append(fill9);
 
             Borders borders1 = new Borders() { Count = (UInt32Value)1U };
 
@@ -146,21 +176,42 @@ namespace openrmf_api_compliance.Models
             // style index 0:  normal font and wrapping of text for cell rows
             CellFormat cellFormat2 = new CellFormat(new Alignment() { WrapText = true }) { NumberFormatId = (UInt32Value)0U, FontId = (UInt32Value)0U, FillId = (UInt32Value)0U, BorderId = (UInt32Value)0U, FormatId = (UInt32Value)0U };
             // style index 1:  normal font with numerical format
-            CellFormat cellFormat3 = new CellFormat() { NumberFormatId = (UInt32Value)2U, FontId = (UInt32Value)0U, FillId = (UInt32Value)0U, BorderId = (UInt32Value)0U, FormatId = (UInt32Value)0U, ApplyNumberFormat = true };
+            CellFormat cellFormat3 = new CellFormat(new Alignment() { WrapText = true }) { NumberFormatId = (UInt32Value)2U, FontId = (UInt32Value)0U, FillId = (UInt32Value)0U, BorderId = (UInt32Value)0U, FormatId = (UInt32Value)0U, ApplyNumberFormat = true };
             // style index 2:  title font of 30 bold
             CellFormat cellFormat4 = new CellFormat() { NumberFormatId = (UInt32Value)0U, FontId = (UInt32Value)2U, FillId = (UInt32Value)0U, BorderId = (UInt32Value)0U, FormatId = (UInt32Value)0U, ApplyFont = true };
             // style index 3:  info row under title and header rows font bold size 18
             CellFormat cellFormat5 = new CellFormat() { NumberFormatId = (UInt32Value)0U, FontId = (UInt32Value)1U, FillId = (UInt32Value)0U, BorderId = (UInt32Value)0U, FormatId = (UInt32Value)0U, ApplyFont = true };
 
             // fill colors based on the fillx variables above to match the 4 statuses of the checklist vulnerabilities
-            // red or Open
+            // style index 4: red or Open
             CellFormat cellFormat6 = new CellFormat(new Alignment() { WrapText = true }) { NumberFormatId = (UInt32Value)0U, FontId = (UInt32Value)0U, FillId = (UInt32Value)5U, BorderId = (UInt32Value)0U, FormatId = (UInt32Value)0U };
-            // blue or Not Applicable
+            // style index 5: silver or Not Applicable
             CellFormat cellFormat7 = new CellFormat(new Alignment() { WrapText = true }) { NumberFormatId = (UInt32Value)0U, FontId = (UInt32Value)0U, FillId = (UInt32Value)2U, BorderId = (UInt32Value)0U, FormatId = (UInt32Value)0U };
-            // green or Not a Finding
+            // style index 6: green or Not a Finding
             CellFormat cellFormat8 = new CellFormat(new Alignment() { WrapText = true }) { NumberFormatId = (UInt32Value)0U, FontId = (UInt32Value)0U, FillId = (UInt32Value)3U, BorderId = (UInt32Value)0U, FormatId = (UInt32Value)0U };
-            // silver or Not Reviewed
+            // style index 7: b/w or Not Reviewed
             CellFormat cellFormat9 = new CellFormat(new Alignment() { WrapText = true }) { NumberFormatId = (UInt32Value)0U, FontId = (UInt32Value)0U, FillId = (UInt32Value)4U, BorderId = (UInt32Value)0U, FormatId = (UInt32Value)0U };
+
+            // CENTER The content for listings versus the excel export of a checklist above
+            // style index 8: red or Open centered content
+            CellFormat cellFormat10 = new CellFormat(new Alignment() { WrapText = true, Horizontal = HorizontalAlignmentValues.Center }) { NumberFormatId = (UInt32Value)0U, FontId = (UInt32Value)0U, FillId = (UInt32Value)5U, BorderId = (UInt32Value)0U, FormatId = (UInt32Value)0U };
+            // style index 9: silver or Not Applicable
+            CellFormat cellFormat11= new CellFormat(new Alignment() { WrapText = true, Horizontal = HorizontalAlignmentValues.Center }) { NumberFormatId = (UInt32Value)0U, FontId = (UInt32Value)0U, FillId = (UInt32Value)2U, BorderId = (UInt32Value)0U, FormatId = (UInt32Value)0U };
+            // style index 10: green or Not a Finding
+            CellFormat cellFormat12 = new CellFormat(new Alignment() { WrapText = true, Horizontal = HorizontalAlignmentValues.Center }) { NumberFormatId = (UInt32Value)0U, FontId = (UInt32Value)0U, FillId = (UInt32Value)3U, BorderId = (UInt32Value)0U, FormatId = (UInt32Value)0U };
+            // style index 11: b/w or Not Reviewed
+            CellFormat cellFormat13 = new CellFormat(new Alignment() { WrapText = true, Horizontal = HorizontalAlignmentValues.Center }) { NumberFormatId = (UInt32Value)0U, FontId = (UInt32Value)0U, FillId = (UInt32Value)4U, BorderId = (UInt32Value)0U, FormatId = (UInt32Value)0U };
+
+            // style index 12: orange Open CAT 2
+            CellFormat cellFormat14 = new CellFormat(new Alignment() { WrapText = true }) { NumberFormatId = (UInt32Value)0U, FontId = (UInt32Value)0U, FillId = (UInt32Value)6U, BorderId = (UInt32Value)0U, FormatId = (UInt32Value)0U };
+            // style index 13: yellow Open CAT 3
+            CellFormat cellFormat15 = new CellFormat(new Alignment() { WrapText = true }) { NumberFormatId = (UInt32Value)0U, FontId = (UInt32Value)0U, FillId = (UInt32Value)7U, BorderId = (UInt32Value)0U, FormatId = (UInt32Value)0U };
+            // style index 14: orange Open CAT 2 centered
+            CellFormat cellFormat16 = new CellFormat(new Alignment() { WrapText = true, Horizontal = HorizontalAlignmentValues.Center }) { NumberFormatId = (UInt32Value)0U, FontId = (UInt32Value)0U, FillId = (UInt32Value)6U, BorderId = (UInt32Value)0U, FormatId = (UInt32Value)0U };
+            // style index 15: yellow Open CAT 3 centered
+            CellFormat cellFormat17 = new CellFormat(new Alignment() { WrapText = true, Horizontal = HorizontalAlignmentValues.Center }) { NumberFormatId = (UInt32Value)0U, FontId = (UInt32Value)0U, FillId = (UInt32Value)7U, BorderId = (UInt32Value)0U, FormatId = (UInt32Value)0U };
+            // style index 16: yellow Open CAT 3 centered
+            CellFormat cellFormat18 = new CellFormat(new Alignment() { WrapText = true }) { NumberFormatId = (UInt32Value)0U, FontId = (UInt32Value)1U, FillId = (UInt32Value)8U, BorderId = (UInt32Value)0U, FormatId = (UInt32Value)0U, ApplyFont = true };
 
             // add all these formats
             cellFormats1.Append(cellFormat2);
@@ -171,6 +222,15 @@ namespace openrmf_api_compliance.Models
             cellFormats1.Append(cellFormat7);
             cellFormats1.Append(cellFormat8);
             cellFormats1.Append(cellFormat9);
+            cellFormats1.Append(cellFormat10);
+            cellFormats1.Append(cellFormat11);
+            cellFormats1.Append(cellFormat12);
+            cellFormats1.Append(cellFormat13);
+            cellFormats1.Append(cellFormat14);
+            cellFormats1.Append(cellFormat15);
+            cellFormats1.Append(cellFormat16);
+            cellFormats1.Append(cellFormat17);
+            cellFormats1.Append(cellFormat18);
 
             CellStyles cellStyles1 = new CellStyles() { Count = (UInt32Value)1U };
             CellStyle cellStyle1 = new CellStyle() { Name = "Normal", FormatId = 0, BuiltinId = 0 };
