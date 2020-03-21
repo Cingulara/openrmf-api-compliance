@@ -247,5 +247,63 @@ namespace openrmf_api_compliance.Classes
             c.Close();
             return cciItems;
         }
+
+
+        /// <summary>
+        /// Return a CCI Item record with the title and references
+        /// </summary>
+        /// <returns></returns>
+        public static CciItem GetCCIItemReferences(string cciId){
+            // get the result ready to receive the info and send on
+            CciItem cciItem = new CciItem();
+            
+            // Create a new connection factory to create a connection.
+            ConnectionFactory cf = new ConnectionFactory();
+            // add the options for the server, reconnecting, and the handler events
+            Options opts = ConnectionFactory.GetDefaultOptions();
+            opts.MaxReconnect = -1;
+            opts.ReconnectWait = 1000;
+            opts.Name = "openrmf-api-compliance";
+            opts.Url = Environment.GetEnvironmentVariable("NATSSERVERURL");
+            opts.AsyncErrorEventHandler += (sender, events) =>
+            {
+                Console.WriteLine(string.Format("NATS client error. Server: {0}. Message: {1}. Subject: {2}", events.Conn.ConnectedUrl, events.Error, events.Subscription.Subject));
+            };
+
+            opts.ServerDiscoveredEventHandler += (sender, events) =>
+            {
+                Console.WriteLine(string.Format("A new server has joined the cluster: {0}", events.Conn.DiscoveredServers));
+            };
+
+            opts.ClosedEventHandler += (sender, events) =>
+            {
+                Console.WriteLine(string.Format("Connection Closed: {0}", events.Conn.ConnectedUrl));
+            };
+
+            opts.ReconnectedEventHandler += (sender, events) =>
+            {
+                Console.WriteLine(string.Format("Connection Reconnected: {0}", events.Conn.ConnectedUrl));
+            };
+
+            opts.DisconnectedEventHandler += (sender, events) =>
+            {
+                Console.WriteLine(string.Format("Connection Disconnected: {0}", events.Conn.ConnectedUrl));
+            };
+            
+            // Creates a live connection to the NATS Server with the above options
+            IConnection c = cf.CreateConnection(opts);
+            
+            // send the message with the subject, passing in the CCI number/id
+            Msg reply = c.Request("openrmf.compliance.cci.references", Encoding.UTF8.GetBytes(cciId), 30000);
+            // save the reply and get back the checklist to score
+            if (reply != null) {
+                cciItem = JsonConvert.DeserializeObject<CciItem>(Compression.DecompressString(Encoding.UTF8.GetString(reply.Data)));
+                c.Close();
+                return cciItem;
+            }
+            c.Close();
+            return cciItem;
+        }
+
     }
 }

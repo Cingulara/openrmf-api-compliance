@@ -60,8 +60,46 @@ namespace openrmf_api_compliance.Controllers
                 }
             }
             else {
-                _logger.LogWarning("Called GetCompliancBySystem() butwith an invalid or empty Id", id);
+                _logger.LogWarning("Called GetCompliancBySystem() but with an invalid or empty Id", id);
                 return BadRequest(); // no term entered
+            }
+        }
+        
+        /// <summary>
+        /// GET The CCI item information and references based on the CCI ID passed in
+        /// </summary>
+        /// <param name="cciid">The CCI Number/ID of the system to generate compliance</param>
+        /// <returns>
+        /// HTTP Status showing the CCI item is here and the CCI item record with references.
+        /// </returns>
+        /// <response code="200">Returns the CCI item record</response>
+        /// <response code="400">If the item did not generate it correctly</response>
+        /// <response code="404">If the ID passed in is not valid</response>
+        [HttpGet("cci/{cciid}")]
+        [Authorize(Roles = "Administrator,Reader,Editor,Assessor")]
+        public async Task<IActionResult> GetCCIItem(string cciid)
+        {
+            if (!string.IsNullOrEmpty(cciid)) {
+                try {
+                    _logger.LogInformation("Calling GetCCIItem({0})", cciid);
+                    var result = NATSClient.GetCCIItemReferences(cciid);
+                    if (result != null) {
+                        _logger.LogInformation("Called GetCCIItem({0}) successfully", cciid);
+                        return Ok(result);
+                    }
+                    else {
+                        _logger.LogWarning("Called GetCCIItem({0}) but had no returned data", cciid);
+                        return NotFound(); // bad system reference
+                    }
+                }
+                catch (Exception ex) {
+                    _logger.LogError(ex, "GetCCIItem() Error getting CCI Item information for {0}", cciid);
+                    return BadRequest();
+                }
+            }
+            else {
+                _logger.LogWarning("Called GetCCIItem() but with an invalid or empty Id", cciid);
+                return BadRequest(); // no CCI Id entered
             }
         }
     }
