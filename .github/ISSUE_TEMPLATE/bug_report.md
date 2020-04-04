@@ -1,7 +1,7 @@
 ---
 name: Bug report
-about: Create a report to help us improve the OpenRMF Score Message Service
 title: "[BUG] "
+about: Create a report to help us improve the OpenRMF Compliance API
 labels: bug
 assignees: Cingulara
 
