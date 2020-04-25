@@ -114,6 +114,10 @@ namespace openrmf_api_compliance
                         .AllowCredentials();
                     });
             });
+            
+            // add service for allowing caching of responses
+            services.AddResponseCaching();
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
                 .AddXmlSerializerFormatters();
         }
@@ -158,6 +162,10 @@ namespace openrmf_api_compliance
             // USE CORS
             // ********************
             app.UseCors("AllowAll");
+            
+            // allow response caching directives in the API Controllers
+            app.UseResponseCaching();
+            
             app.UseAuthentication();
             app.UseHttpsRedirection();
             app.UseMvc();

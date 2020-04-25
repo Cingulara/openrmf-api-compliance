@@ -251,6 +251,7 @@ namespace openrmf_api_compliance.Controllers
         /// <response code="404">If the ID passed in is not valid</response>
         [HttpGet("cci/{cciid}")]
         [Authorize(Roles = "Administrator,Reader,Editor,Assessor")]
+        [ResponseCache(Duration = 60, Location = ResponseCacheLocation.Any, VaryByQueryKeys = new [] {"cciid"})]
         public async Task<IActionResult> GetCCIItem(string cciid)
         {
             if (!string.IsNullOrEmpty(cciid)) {
