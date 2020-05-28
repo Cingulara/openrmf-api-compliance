@@ -20,7 +20,7 @@ namespace tests.Models
             art.created = DateTime.Now;
             art.description = "my description";
             art.rawChecklist = "my XML goes here";
-            art.system = "my system";
+            art.systemGroupId = "86758765gjhfdhgdhteryur564";
             art.InternalId = "som234872349087sdhfasdfhoddq908457098457sdajajstring";
             art.hostName = "myHost";
             art.stigType = "Google Chrome";
@@ -32,7 +32,7 @@ namespace tests.Models
             Assert.True (!string.IsNullOrEmpty(art.created.ToShortDateString()));
             Assert.True (!string.IsNullOrEmpty(art.description));
             Assert.True (!string.IsNullOrEmpty(art.rawChecklist));
-            Assert.True (!string.IsNullOrEmpty(art.system));
+            Assert.True (!string.IsNullOrEmpty(art.systemGroupId));
             Assert.True (!string.IsNullOrEmpty(art.InternalId));
             Assert.True (!string.IsNullOrEmpty(art.hostName));
             Assert.True (!string.IsNullOrEmpty(art.stigType));
