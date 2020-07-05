@@ -11,7 +11,8 @@ using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
-using Swashbuckle.AspNetCore.Swagger;
+using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
 using Prometheus;
 using OpenTracing;
 using OpenTracing.Util;
@@ -48,13 +49,13 @@ namespace openrmf_api_compliance
             // Register the Swagger generator, defining one or more Swagger documents
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new Info { Title = "OpenRMF Compliance API", Version = "v1", 
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "OpenRMF Compliance API", Version = "v1", 
                     Description = "The Compliance API that goes with the OpenRMF tool",
-                    Contact = new Contact
+                    Contact = new OpenApiContact
                     {
                         Name = "Dale Bingham",
                         Email = "dale.bingham@cingulara.com",
-                        Url = "https://github.com/Cingulara/openrmf-api-read"
+                        Url = new Uri("https://github.com/Cingulara/openrmf-api-compliance")
                     } });
             });
 
@@ -98,32 +99,15 @@ namespace openrmf_api_compliance
                 options.AddPolicy("Reader", policy => policy.RequireRole("roles", "[Reader]"));
                 options.AddPolicy("Assessor", policy => policy.RequireRole("roles", "[Assessor]"));
             });
-
-            // ********************
-            // USE CORS
-            // ********************
-            services.AddCors(options =>
-            {
-                options.AddPolicy("AllowAll",
-                    builder =>
-                    {
-                        builder
-                        .AllowAnyOrigin() 
-                        .AllowAnyMethod()
-                        .AllowAnyHeader()
-                        .AllowCredentials();
-                    });
-            });
             
             // add service for allowing caching of responses
             services.AddResponseCaching();
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
-                .AddXmlSerializerFormatters();
+            services.AddControllers();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             // Custom Metrics to count requests for each endpoint and the method
             var counter = Metrics.CreateCounter("openrmf_compliance_api_path_counter", "Counts requests to OpenRMF endpoints", new CounterConfiguration
@@ -158,17 +142,16 @@ namespace openrmf_api_compliance
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "OpenRMF Compliance API V1");
             });
 
-            // ********************
-            // USE CORS
-            // ********************
-            app.UseCors("AllowAll");
-            
             // allow response caching directives in the API Controllers
             app.UseResponseCaching();
-            
-            app.UseAuthentication();
             app.UseHttpsRedirection();
-            app.UseMvc();
-        }
+            app.UseRouting();
+            // this has to go here
+            app.UseAuthentication();
+            app.UseAuthorization();
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });        }
     }
 }
