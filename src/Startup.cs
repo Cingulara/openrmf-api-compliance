@@ -21,6 +21,8 @@ namespace openrmf_api_compliance
 {
     public class Startup
     {
+        readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -99,6 +101,16 @@ namespace openrmf_api_compliance
                 options.AddPolicy("Reader", policy => policy.RequireRole("roles", "[Reader]"));
                 options.AddPolicy("Assessor", policy => policy.RequireRole("roles", "[Assessor]"));
             });
+
+            // add the CORS setup
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: MyAllowSpecificOrigins,
+                    builder =>
+                    {
+                        builder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin();
+                    });
+            });
             
             // add service for allowing caching of responses
             services.AddResponseCaching();
@@ -146,6 +158,7 @@ namespace openrmf_api_compliance
             app.UseResponseCaching();
             app.UseHttpsRedirection();
             app.UseRouting();
+            app.UseCors();
             // this has to go here
             app.UseAuthentication();
             app.UseAuthorization();
