@@ -158,7 +158,7 @@ namespace openrmf_api_compliance
             app.UseResponseCaching();
             app.UseHttpsRedirection();
             app.UseRouting();
-            app.UseCors();
+            app.UseCors(MyAllowSpecificOrigins);
             // this has to go here
             app.UseAuthentication();
             app.UseAuthorization();
