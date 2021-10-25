@@ -60,7 +60,7 @@ namespace openrmf_api_compliance.Classes
             IConnection c = cf.CreateConnection(opts);
 
             // publish to get this list of Artifact checklists back via system
-            Msg reply = c.Request("openrmf.system", Encoding.UTF8.GetBytes(system), 30000); 
+            Msg reply = c.Request("openrmf.system", Encoding.UTF8.GetBytes(system), 10000); 
             c.Flush();
             // save the reply and get back the system group record
             if (reply != null) {
