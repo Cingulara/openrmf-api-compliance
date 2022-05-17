@@ -68,6 +68,8 @@ namespace openrmf_api_compliance
                     webBuilder.ConfigureKestrel(serverOptions =>
                     {
                         // Set properties and call methods on options
+                        // make the timeout 6 minutes for longer running processes
+                        serverOptions.Limits.KeepAliveTimeout = TimeSpan.FromMinutes(6);
                     })                        
                     .ConfigureLogging(logging =>
                     {
