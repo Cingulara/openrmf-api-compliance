@@ -1,6 +1,9 @@
 ![.NET Core Build and Test](https://github.com/Cingulara/openrmf-api-compliance/workflows/.NET%20Core%20Build%20and%20Test/badge.svg)
 
 # openrmf-api-compliance
+
+> *As of version 1.8, this functionality is moved into the openrmf-api-read project to reduce the footprint and number of components.*
+
 This is the OpenRMF Compliance API that reads in all system checklists via the openRMF Read API, 
 and for each matches the 1-or-more CCI per STIG vulnerability to the NIST to CCI listing based on 
 the XML file from DISA. It then generates a report of Open (STIG is open), Not Reviewed, or Not a Finding/Closed
